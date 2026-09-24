@@ -25,15 +25,15 @@
 - [ ] `check.bat` → /page2 ✓ ไม่มี warning
 - [ ] commit `page2: ...`
 
-## page3 — ผู้รับผิดชอบ: สกาว แก้วเขียว · แบบจาก catalog: __________
+## page3 — ผู้รับผิดชอบ: นางสาวสกาว แก้วเขียว · แบบจาก catalog: __________
 - [ ] คัดลอกจาก catalog แล้วเปลี่ยน TITLE
 - [ ] ใช้ field ของ data.json ของกลุ่ม
 - [ ] เปิด /page3 ได้ ไม่มี TODO
 - [ ] `check.bat` → /page3 ✓ ไม่มี warning
 - [ ] commit `page3: ...`
 
-## models.py — ผู้รับผิดชอบ: ปริญ ชัยมงคล
-- [ ] เปลี่ยนชื่อ class ให้ตรงหัวข้อ, field ตรง data.json
+## models.py — ผู้รับผิดชอบ: นายปริญ ชัยมงคล
+- [ ✓] เปลี่ยนชื่อ class ให้ตรงหัวข้อ, field ตรง data.json
 - [ ] method 1 ตัวที่มีประโยชน์ (ไม่เหลือ TODO)
 - [ ] มีหน้าใดหน้าหนึ่งใช้ class นี้ (เช่น แบบ detail)
 - [ ] `python check_project.py` → class ✓ 9/9
