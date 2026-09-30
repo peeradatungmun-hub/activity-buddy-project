@@ -1,6 +1,214 @@
 {% extends "base.html" %}
-{# templates/page1.html — ★ your page 1. Replace with a page from catalog/ and adapt. #}
+
 {% block content %}
-<h1>{{ title }}</h1>
-<p>TODO: page 1 content</p>
+<style>
+    /* Page 1 specific styles */
+    .page1-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .page1-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .page1-small-heading {
+        color: #6c757d;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+    }
+    
+    .page1-main-heading {
+        font-size: 2.5rem;
+        color: #212529;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+    
+    .page1-description {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+    }
+    
+    .page1-search-form {
+        max-width: 600px;
+        margin: 0 auto;
+        display: flex;
+        gap: 10px;
+    }
+    
+    .page1-search-input {
+        flex-grow: 1;
+        padding: 12px 20px;
+        border: 1px solid #ced4da;
+        border-radius: 50px;
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+    
+    .page1-search-input:focus {
+        border-color: #007bff;
+    }
+    
+    .page1-search-button {
+        padding: 12px 25px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.2s;
+    }
+    
+    .page1-search-button:hover {
+        background-color: #0056b3;
+    }
+    
+    .page1-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    /* Responsive Grid */
+    @media (min-width: 768px) {
+        .page1-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @media (min-width: 1024px) {
+        .page1-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    
+    .page1-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        border: 1px solid #e9ecef;
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .page1-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+    }
+    
+    .page1-card-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .page1-card-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #212529;
+        margin-bottom: 10px;
+    }
+    
+    .page1-card-members {
+        color: #007bff;
+        font-weight: 500;
+        margin-bottom: 15px;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .page1-card-places {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        flex-grow: 1;
+    }
+    
+    .page1-card-place-item {
+        margin-bottom: 5px;
+        display: flex;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .page1-button {
+        display: inline-block;
+        text-align: center;
+        padding: 10px 20px;
+        background-color: #f8f9fa;
+        color: #212529;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: background-color 0.2s, color 0.2s;
+        border: 1px solid #dee2e6;
+    }
+    
+    .page1-button:hover {
+        background-color: #212529;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .page1-empty-state {
+        text-align: center;
+        padding: 50px;
+        color: #6c757d;
+        grid-column: 1 / -1;
+    }
+</style>
+
+<div class="page1-container">
+    <div class="page1-header">
+        <div class="page1-small-heading">เริ่มออกเดินทาง &middot; DISCOVER ACTIVITIES</div>
+        <h1 class="page1-main-heading">เลือกกิจกรรมที่ใช่สำหรับคุณ</h1>
+        <p class="page1-description">เลือกกิจกรรมที่คุณสนใจ แล้วระบบจะพาไปค้นหาสถานที่และเพื่อนร่วมกิจกรรม</p>
+        
+        <form class="page1-search-form" method="get">
+            <input type="text" name="q" class="page1-search-input" placeholder="ค้นหากิจกรรม เช่น วิ่ง, แบด, บอร์ดเกม..." value="{{ search_keyword }}">
+            <button type="submit" class="page1-search-button">ค้นหา</button>
+        </form>
+    </div>
+
+    <div class="page1-grid">
+        {% if activities %}
+            {% for act in activities %}
+            <div class="page1-card">
+                <div class="page1-card-icon">{{ act.icon }}</div>
+                <div class="page1-card-title">{{ act.name }}</div>
+                <div class="page1-card-members">
+                    👥 {{ act.total_members }} คนเข้าร่วม
+                </div>
+                <div class="page1-card-places">
+                    <strong>📍 สถานที่:</strong>
+                    {% for place in act.places[:2] %}
+                        <div class="page1-card-place-item">{{ place }}</div>
+                    {% endfor %}
+                    {% if act.places|length > 2 %}
+                        <div class="page1-card-place-item">...และอื่นๆ อีก {{ act.places|length - 2 }} แห่ง</div>
+                    {% endif %}
+                </div>
+                <a href="/page2?activity={{ act.name }}" class="page1-button">เลือกกิจกรรมนี้ &rarr;</a>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="page1-empty-state">
+                <h2>ไม่พบกิจกรรมที่คุณค้นหา</h2>
+                <p>ลองค้นหาด้วยคำอื่น หรือดู <a href="/page1">กิจกรรมทั้งหมด</a></p>
+            </div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
