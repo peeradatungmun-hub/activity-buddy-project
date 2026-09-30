@@ -34,12 +34,6 @@ def build(query=None):
         if search_keyword and search_keyword not in activity_name.lower():
             continue
             
-        members_count = row.get("members", 0)
-        try:
-            members_count = int(members_count)
-        except ValueError:
-            members_count = 0
-            
         place = row.get("place", "")
         
         if activity_name not in activity_summary:
@@ -47,11 +41,11 @@ def build(query=None):
             activity_summary[activity_name] = {
                 "name": activity_name,
                 "icon": icon,
-                "total_members": 0,
+                "group_count": 0,
                 "places": []
             }
             
-        activity_summary[activity_name]["total_members"] += members_count
+        activity_summary[activity_name]["group_count"] += 1
         if place and place not in activity_summary[activity_name]["places"]:
             activity_summary[activity_name]["places"].append(place)
             

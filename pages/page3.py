@@ -3,7 +3,7 @@ import storage
 from models import Activity
 
 
-TITLE = "Activity Groups"
+TITLE = "กลุ่มกิจกรรม · Activity Groups"
 OPEN_STATUS = "\u0e40\u0e1b\u0e34\u0e14\u0e23\u0e31\u0e1a"
 FULL_STATUS = "\u0e40\u0e15\u0e47\u0e21"
 
@@ -31,7 +31,10 @@ def _view_record(row, index):
         "activity": activity.activity,
         "place": activity.place,
         "group_name": activity.group_name,
+        "creator": str(row.get("creator", "")).strip(),
         "date": activity.date,
+        "start_time": str(row.get("start_time", "")).strip(),
+        "end_time": str(row.get("end_time", "")).strip(),
         "members": activity.members,
         "max_members": capacity,
         "remaining_spaces": activity.remaining_spaces(),
@@ -93,21 +96,28 @@ def handle(form):
 
     if action == "create":
         group_name = form.get("group_name", "").strip()
+        creator = form.get("creator", "").strip()
         activity_name = form.get("activity", "").strip()
         place = form.get("place", "").strip()
         date = form.get("date", "").strip()
+        start_time = form.get("start_time", "").strip()
+        end_time = form.get("end_time", "").strip()
         try:
             max_members = int(form.get("max_members", ""))
         except (TypeError, ValueError):
-            return "Please enter a valid group capacity."
+            return "✗ กรุณากรอกจำนวนสมาชิกสูงสุดให้ถูกต้อง"
 
         known_activities = {str(row.get("activity", "")).strip() for row in rows}
-        if not group_name or not activity_name or not place or not date:
-            return "Please complete every activity group field."
+        if not group_name or not creator or not activity_name or not place or not date:
+            return "✗ กรุณากรอกข้อมูลกลุ่มให้ครบทุกช่อง"
+        if not start_time or not end_time:
+            return "✗ กรุณากรอกเวลาเริ่มและเวลาสิ้นสุด"
+        if end_time <= start_time:
+            return "✗ เวลาสิ้นสุดต้องช้ากว่าเวลาเริ่ม"
         if activity_name not in known_activities:
-            return "Choose an activity from the available categories."
+            return "✗ กรุณาเลือกกิจกรรมที่มีอยู่ในระบบ"
         if not 2 <= max_members <= 50:
-            return "Group capacity must be between 2 and 50."
+            return "✗ จำนวนสมาชิกสูงสุดต้องอยู่ระหว่าง 2 ถึง 50 คน"
 
         new_group = Activity(
             activity=activity_name,
@@ -118,30 +128,35 @@ def handle(form):
             max_members=max_members,
             status=OPEN_STATUS,
         )
-        rows.append(new_group.to_dict())
+        new_record = new_group.to_dict()
+        new_record["creator"] = creator
+        new_record["start_time"] = start_time
+        new_record["end_time"] = end_time
+        rows.append(new_record)
         storage.save(rows)
-        return "Activity group created."
+        return "✓ สร้างกลุ่มกิจกรรมเรียบร้อยแล้ว"
 
     if action == "join":
         try:
             group_index = int(form.get("group_index", ""))
         except (TypeError, ValueError):
-            return "Select a valid activity group."
+            return "✗ กรุณาเลือกกลุ่มกิจกรรมที่ถูกต้อง"
         if group_index < 0 or group_index >= len(rows):
-            return "That activity group is no longer available."
+            return "✗ ไม่พบกลุ่มกิจกรรมนี้แล้ว"
 
         try:
             group = Activity.from_dict(rows[group_index])
         except (TypeError, ValueError):
-            return "That activity group has invalid data."
+            return "✗ ข้อมูลกลุ่มกิจกรรมไม่ถูกต้อง"
         if group.is_full():
-            return "This activity group is already full."
+            return "✗ กลุ่มกิจกรรมนี้เต็มแล้ว"
 
         group.members += 1
         group.status = FULL_STATUS if group.is_full() else OPEN_STATUS
-        rows[group_index] = group.to_dict()
+        rows[group_index]["members"] = group.members
+        rows[group_index]["status"] = group.status
         storage.save(rows)
-        return "You joined the activity group."
+        return "✓ เข้าร่วมกลุ่มกิจกรรมเรียบร้อยแล้ว"
 
-    return "Choose a valid activity group action."
+    return "✗ กรุณาเลือกคำสั่งที่ถูกต้อง"
 

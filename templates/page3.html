@@ -82,18 +82,18 @@
 <div class="page3">
   <section class="page3-hero" aria-labelledby="activity-groups-title">
     <div class="page3-hero-copy">
-      <span class="page3-eyebrow">Activity Groups</span>
-      <h1 id="activity-groups-title">Find your people. Make a plan.</h1>
-      <p>Browse existing student groups, check the details, and join one that fits your schedule.</p>
+      <span class="page3-eyebrow">ACTIVITY BUDDY · กลุ่มกิจกรรม</span>
+      <h1 id="activity-groups-title">ค้นหากลุ่มที่ใช่ แล้วไปทำกิจกรรมด้วยกัน</h1>
+      <p>ดูกลุ่มกิจกรรม สถานที่ เวลา และจำนวนสมาชิก ก่อนเลือกเข้าร่วมกลุ่มที่เหมาะกับคุณ</p>
     </div>
     <div class="page3-hero-actions">
-      <a class="page3-primary" href="{{ url_for('page', name='page3', action='create') }}">+ Create New Activity Group</a>
-      <a class="page3-secondary" href="#activity-groups">Browse groups</a>
+      <a class="page3-primary" href="{{ url_for('page', name='page3', activity=selected_activity, place=selected_place, action='create') }}">+ สร้างกลุ่มกิจกรรมใหม่</a>
+      <a class="page3-secondary" href="#activity-groups">ดูกลุ่มกิจกรรม</a>
     </div>
   </section>
 
   <nav class="page3-filterbar" aria-label="Filter activity groups">
-    <a class="page3-filter{% if not selected_activity %} active{% endif %}" href="{{ url_for('page', name='page3') }}">All groups ({{ total_group_count }})</a>
+    <a class="page3-filter{% if not selected_activity %} active{% endif %}" href="{{ url_for('page', name='page3') }}">ทุกกลุ่ม ({{ total_group_count }})</a>
     {% for category in activity_categories %}
     <a class="page3-filter{% if selected_activity == category.name %} active{% endif %}" href="{{ url_for('page', name='page3', activity=category.name) }}">{{ category.name }} ({{ category.count }})</a>
     {% endfor %}
@@ -101,38 +101,54 @@
 
   {% if show_create_form %}
   <section class="page3-form-panel" aria-labelledby="create-group-title">
-    <h2 id="create-group-title">Create New Activity Group</h2>
-    <form method="post" action="{{ url_for('page', name='page3', action='create') }}">
+    <h2 id="create-group-title">สร้างกลุ่มกิจกรรมใหม่</h2>
+    <form method="post" action="{{ url_for('page', name='page3', activity=selected_activity, place=selected_place, action='create') }}">
       <input type="hidden" name="action" value="create">
       <div class="page3-form-grid">
         <div class="page3-field">
-          <label for="group_name">Group name</label>
-          <input id="group_name" name="group_name" required maxlength="80" placeholder="Group name">
+          <label for="group_name">ชื่อกลุ่ม</label>
+          <input id="group_name" name="group_name" required maxlength="80" placeholder="เช่น วิ่งยามเย็นด้วยกัน">
         </div>
         <div class="page3-field">
-          <label for="activity">Activity category</label>
+          <label for="creator">ผู้สร้างกลุ่ม</label>
+          <input id="creator" name="creator" required maxlength="60" placeholder="ชื่อหรือชื่อเล่น">
+        </div>
+        <div class="page3-field">
+          <label for="activity">กิจกรรม</label>
+          {% if selected_activity %}
+          <input id="activity" name="activity" value="{{ selected_activity }}" readonly required>
+          {% else %}
           <select id="activity" name="activity" required>
             {% for category in activity_categories %}
             <option value="{{ category.name }}"{% if selected_activity == category.name %} selected{% endif %}>{{ category.name }}</option>
             {% endfor %}
           </select>
+          {% endif %}
         </div>
         <div class="page3-field">
-          <label for="place">Meeting place</label>
-          <input id="place" name="place" required maxlength="160" placeholder="Meeting place">
+          <label for="place">สถานที่นัดพบ</label>
+          <input id="place" name="place" value="{{ selected_place }}" required maxlength="160" placeholder="สถานที่นัดพบ"{% if selected_place %} readonly{% endif %}>
         </div>
         <div class="page3-field">
-          <label for="date">Date</label>
+          <label for="date">วันที่</label>
           <input id="date" name="date" type="date" required>
         </div>
         <div class="page3-field">
-          <label for="max_members">Group capacity</label>
+          <label for="start_time">เวลาเริ่ม</label>
+          <input id="start_time" name="start_time" type="time" required>
+        </div>
+        <div class="page3-field">
+          <label for="end_time">เวลาสิ้นสุด</label>
+          <input id="end_time" name="end_time" type="time" required>
+        </div>
+        <div class="page3-field">
+          <label for="max_members">จำนวนสมาชิกสูงสุด</label>
           <input id="max_members" name="max_members" type="number" min="2" max="50" value="6" required>
         </div>
       </div>
       <div class="page3-form-actions">
-        <button class="page3-primary page3-submit" type="submit">Create group</button>
-        <a class="page3-primary page3-cancel" href="{{ url_for('page', name='page3', activity=selected_activity) if selected_activity else url_for('page', name='page3') }}">Cancel</a>
+        <button class="page3-primary page3-submit" type="submit">สร้างกลุ่มกิจกรรม</button>
+        <a class="page3-primary page3-cancel" href="{{ url_for('page', name='page3', activity=selected_activity, place=selected_place) if selected_activity else url_for('page', name='page3') }}">ยกเลิก</a>
       </div>
     </form>
   </section>
@@ -141,18 +157,18 @@
   {% if selected_group %}
   <section class="page3-detail-panel" aria-labelledby="selected-group-title">
     <h2 id="selected-group-title">{{ selected_group.group_name }}</h2>
-    <div>{{ selected_group.activity }} &#xb7; {{ selected_group.place }} &#xb7; {{ selected_group.date }}</div>
-    <a class="page3-view" href="{{ url_for('page', name='page3', activity=selected_activity) if selected_activity else url_for('page', name='page3') }}">Back to activity groups</a>
+    <div>👤 {{ selected_group.creator }} · 📍 {{ selected_group.place }} · 🕒 {{ selected_group.start_time }} - {{ selected_group.end_time }} · {{ selected_group.date }}</div>
+    <a class="page3-view" href="{{ url_for('page', name='page3', activity=selected_activity, place=selected_place) if selected_activity else url_for('page', name='page3') }}">กลับไปดูกลุ่มกิจกรรม</a>
   </section>
   {% endif %}
 
   <section id="activity-groups" aria-labelledby="groups-heading">
     <div class="page3-toolbar">
       <div>
-        <h2 id="groups-heading">Activity Groups</h2>
-        <p>{% if selected_activity %}Showing groups for {{ selected_activity }}{% if selected_place %} at {{ selected_place }}{% endif %}{% else %}All available groups{% endif %}</p>
+        <h2 id="groups-heading">กลุ่มกิจกรรม</h2>
+        <p>{% if selected_activity %}แสดงกลุ่มสำหรับ {{ selected_activity }}{% if selected_place %} ที่ {{ selected_place }}{% endif %}{% else %}กลุ่มกิจกรรมทั้งหมด{% endif %}</p>
       </div>
-      <p>{{ group_count }} group{% if group_count != 1 %}s{% endif %}</p>
+      <p>{{ group_count }} กลุ่ม</p>
     </div>
 
     {% if activities %}
@@ -163,27 +179,27 @@
           <div class="page3-avatar" aria-hidden="true">{{ activity.icon }}</div>
           <div class="page3-group-info">
             <a class="page3-group-name" href="{{ url_for('page', name='page3', activity=activity.activity, place=activity.place, group_id=activity.id) }}">{{ activity.group_name }}</a>
-            <div class="page3-host-note">{{ activity.activity }}</div>
+            <div class="page3-host-note">สร้างโดย: {{ activity.creator }}</div>
           </div>
-          <span class="page3-status{% if activity.is_full %} full{% endif %}">{% if activity.is_full %}Full{% else %}Open{% endif %}</span>
+          <span class="page3-status{% if activity.is_full %} full{% endif %}">{% if activity.is_full %}เต็ม{% else %}เปิดรับ{% endif %}</span>
         </div>
         <h3 class="page3-activity">{{ activity.activity }}</h3>
         <div class="page3-facts">
-          <div class="page3-fact"><span class="page3-fact-label">Date</span><span class="page3-fact-value">{{ activity.date }}</span></div>
-          <div class="page3-fact"><span class="page3-fact-label">Meeting place</span><span class="page3-fact-value">{{ activity.place }}</span></div>
-          <div class="page3-fact"><span class="page3-fact-label">Group</span><span class="page3-fact-value">{{ activity.group_name }}</span></div>
-          <div class="page3-fact"><span class="page3-fact-label">Available spaces</span><span class="page3-fact-value">{{ activity.remaining_spaces }}</span></div>
+          <div class="page3-fact"><span class="page3-fact-label">📅 วันที่</span><span class="page3-fact-value">{{ activity.date }}</span></div>
+          <div class="page3-fact"><span class="page3-fact-label">🕒 เวลา</span><span class="page3-fact-value">{{ activity.start_time }} - {{ activity.end_time }}</span></div>
+          <div class="page3-fact"><span class="page3-fact-label">📍 สถานที่</span><span class="page3-fact-value">{{ activity.place }}</span></div>
+          <div class="page3-fact"><span class="page3-fact-label">👤 ผู้สร้างกลุ่ม</span><span class="page3-fact-value">{{ activity.creator }}</span></div>
         </div>
         <div class="page3-capacity">
-          <div class="page3-capacity-top"><span>Participants</span><strong>{{ activity.members }}/{{ activity.max_members }}</strong></div>
+          <div class="page3-capacity-top"><span>👥 สมาชิก</span><strong>{{ activity.members }} / {{ activity.max_members }} คน</strong></div>
           <div class="page3-progress" role="img" aria-label="{{ activity.members }} of {{ activity.max_members }} participants"><span style="width: {{ activity.progress }}%"></span></div>
         </div>
         <div class="page3-card-actions">
-          <a class="page3-view" href="{{ url_for('page', name='page3', activity=activity.activity, place=activity.place, group_id=activity.id) }}">View details &#x2192;</a>
+          <a class="page3-view" href="{{ url_for('page', name='page3', activity=activity.activity, place=activity.place, group_id=activity.id) }}">ดูรายละเอียด &#x2192;</a>
           <form method="post" action="{{ url_for('page', name='page3', activity=activity.activity, place=activity.place) }}">
             <input type="hidden" name="action" value="join">
             <input type="hidden" name="group_index" value="{{ activity.id }}">
-            <button class="page3-join" type="submit"{% if activity.is_full %} disabled{% endif %}>{% if activity.is_full %}Group full{% else %}Join Group{% endif %}</button>
+            <button class="page3-join" type="submit"{% if activity.is_full %} disabled{% endif %}>{% if activity.is_full %}กลุ่มเต็ม{% else %}เข้าร่วมกลุ่ม{% endif %}</button>
           </form>
         </div>
       </article>
@@ -191,12 +207,27 @@
     </div>
     {% else %}
     <div class="page3-empty">
-      <h3>No activity groups found</h3>
-      <p>{% if selected_activity %}There are no matching groups for this selection.{% else %}There are no activity groups yet.{% endif %}</p>
-      <a class="page3-view" href="{{ url_for('page', name='page3') }}">Show all groups</a>
+      <h3>ไม่พบกลุ่มกิจกรรม</h3>
+      <p>{% if selected_activity %}ยังไม่มีกลุ่มที่ตรงกับกิจกรรมและสถานที่นี้{% else %}ยังไม่มีกลุ่มกิจกรรมในขณะนี้{% endif %}</p>
+      <a class="page3-view" href="{{ url_for('page', name='page3') }}">ดูกลุ่มทั้งหมด</a>
     </div>
     {% endif %}
   </section>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    const creatorInput = document.getElementById("creator");
+    if (!creatorInput || creatorInput.value.trim() !== "") {
+      return;
+    }
+
+    // Use the nickname from the Home-page login as the default creator.
+    const displayName = sessionStorage.getItem("display_name") || "";
+    creatorInput.value = displayName;
+  }());
+</script>
 {% endblock %}
 
