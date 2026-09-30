@@ -1,6 +1,83 @@
 {% extends "base.html" %}
 {# templates/page3.html — ★ your page 3. Replace with a page from catalog/ and adapt. #}
+
+{% block head %}
+<style>
+  .page3-user-row {
+    display: flex;
+    min-height: 36px;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+  }
+
+  .page3-user-badge {
+    display: inline-flex;
+    max-width: 100%;
+    align-items: center;
+    gap: 9px;
+    padding: 6px 8px 6px 12px;
+    border: 1px solid #e3d4ef;
+    border-radius: 999px;
+    color: #5e3977;
+    background: #fff;
+    box-shadow: 0 7px 18px rgba(74, 47, 91, .08);
+    font-size: .86rem;
+  }
+
+  .page3-user-badge[hidden] {
+    display: none;
+  }
+
+  .page3-user-name {
+    overflow-wrap: anywhere;
+    font-weight: 700;
+  }
+
+  .page3-user-logout {
+    padding: 5px 10px;
+    border: 1px solid #eadcf3;
+    border-radius: 999px;
+    color: #7a2db0;
+    background: #faf4ff;
+    font: inherit;
+    font-size: .78rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
+<div class="page3-user-row">
+  <div class="page3-user-badge" id="page-user-badge" hidden>
+    <span>👤 <span class="page3-user-name" id="page-user-name"></span></span>
+    <button class="page3-user-logout" id="page-user-logout" type="button">ออกจากระบบ</button>
+  </div>
+</div>
 <h1>{{ title }}</h1>
 <p>TODO: page 3 content</p>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    const storageKey = "display_name";
+    const userBadge = document.getElementById("page-user-badge");
+    const userName = document.getElementById("page-user-name");
+    const logoutButton = document.getElementById("page-user-logout");
+
+    // Read the nickname saved by the Home page.
+    const displayName = sessionStorage.getItem(storageKey) || "";
+    if (displayName !== "") {
+      userName.textContent = displayName;
+      userBadge.hidden = false;
+    }
+
+    // Remove the nickname, then return to the Home page.
+    logoutButton.addEventListener("click", function () {
+      sessionStorage.removeItem(storageKey);
+      window.location.href = "/";
+    });
+  }());
+</script>
 {% endblock %}

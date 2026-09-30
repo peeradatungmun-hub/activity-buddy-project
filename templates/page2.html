@@ -1,6 +1,484 @@
 {% extends "base.html" %}
-{# templates/page2.html — ★ your page 2. Replace with a page from catalog/ and adapt. #}
+
+{% block head %}
+<style>
+  .place-page {
+    --ink: #172033;
+    --muted: #667085;
+    --pink: #f43f83;
+    --purple: #8b2cf5;
+    --green: #087a5b;
+    padding: 24px 0 48px;
+  }
+
+  .page-user-row {
+    display: flex;
+    min-height: 36px;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+  }
+
+  .page-user-badge {
+    display: inline-flex;
+    max-width: 100%;
+    align-items: center;
+    gap: 9px;
+    padding: 6px 8px 6px 12px;
+    border: 1px solid #e3d4ef;
+    border-radius: 999px;
+    color: #5e3977;
+    background: rgba(255, 255, 255, .92);
+    box-shadow: 0 7px 18px rgba(74, 47, 91, .08);
+    font-size: .86rem;
+  }
+
+  .page-user-badge[hidden] {
+    display: none;
+  }
+
+  .page-user-name {
+    overflow-wrap: anywhere;
+    font-weight: 700;
+  }
+
+  .page-user-logout {
+    padding: 5px 10px;
+    border: 1px solid #eadcf3;
+    border-radius: 999px;
+    color: #7a2db0;
+    background: #faf4ff;
+    font: inherit;
+    font-size: .78rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .place-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 30px 32px;
+    border: 1px solid #f1e8f2;
+    border-radius: 28px;
+    background:
+      radial-gradient(circle at 88% 10%, rgba(255, 206, 84, .24), transparent 22%),
+      radial-gradient(circle at 10% 100%, rgba(207, 68, 255, .11), transparent 28%),
+      linear-gradient(135deg, #fffafd 0%, #ffffff 52%, #f5fffb 100%);
+  }
+
+  .place-eyebrow {
+    margin: 0 0 8px;
+    color: var(--pink);
+    font-size: .92rem;
+    font-weight: 700;
+    letter-spacing: .02em;
+  }
+
+  .place-heading {
+    max-width: 760px;
+    margin: 0;
+    color: var(--ink);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    line-height: 1.15;
+  }
+
+  .place-subheading {
+    max-width: 720px;
+    margin: 12px 0 0;
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
+  .selected-activity {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 22px;
+    padding: 9px 15px;
+    border: 1px solid #ead8ff;
+    border-radius: 999px;
+    color: #6e20be;
+    background: #f8f0ff;
+    font-size: .9rem;
+    font-weight: 700;
+  }
+
+  .place-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin: 24px 0 18px;
+  }
+
+  .place-result-count {
+    margin: 0;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  .back-link {
+    color: #7622c4;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+
+  .place-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .place-card {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    min-height: 370px;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 24px;
+    border: 1px solid #e8d6ff;
+    border-radius: 26px;
+    background: #fff;
+    box-shadow: 0 16px 45px rgba(39, 25, 70, .07);
+  }
+
+  .place-card::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 7px;
+    background: linear-gradient(90deg, #ffb000, #ff3c84, #8c2df4);
+    content: "";
+  }
+
+  .place-card:nth-child(3n + 2) {
+    border-color: #bdeedc;
+  }
+
+  .place-card:nth-child(3n + 2)::before {
+    background: linear-gradient(90deg, #12ca8a, #28aaf7);
+  }
+
+  .place-card:nth-child(3n + 3) {
+    border-color: #ffd0db;
+  }
+
+  .place-card:nth-child(3n + 3)::before {
+    background: linear-gradient(90deg, #ff6a89, #f12c91);
+  }
+
+  .card-topline {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .place-icon {
+    display: grid;
+    width: 58px;
+    height: 58px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 18px;
+    background: #fff8df;
+    font-size: 1.7rem;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 11px;
+    border-radius: 999px;
+    font-size: .84rem;
+    font-weight: 700;
+  }
+
+  .status-badge.open {
+    color: var(--green);
+    background: #dff9ef;
+  }
+
+  .status-badge.full {
+    color: #bb234f;
+    background: #ffe8ef;
+  }
+
+  .place-name {
+    margin: 0;
+    color: var(--ink);
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .activity-line {
+    margin: 8px 0 18px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .metric {
+    padding: 12px;
+    border-radius: 15px;
+    background: #f8f8fb;
+  }
+
+  .metric strong,
+  .metric span {
+    display: block;
+  }
+
+  .metric strong {
+    color: var(--ink);
+    font-size: 1.05rem;
+  }
+
+  .metric span {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: .8rem;
+  }
+
+  .group-details {
+    margin: 18px 0 0;
+    padding: 16px 0 0;
+    border-top: 1px solid #ececf2;
+    color: var(--muted);
+    font-size: .9rem;
+    line-height: 1.7;
+  }
+
+  .group-details p {
+    margin: 3px 0;
+    overflow-wrap: anywhere;
+  }
+
+  .select-form {
+    margin-top: auto;
+    padding-top: 20px;
+  }
+
+  .select-button {
+    width: 100%;
+    padding: 12px 16px;
+    border: 0;
+    border-radius: 14px;
+    color: #fff;
+    background: linear-gradient(90deg, var(--purple), #d526d9);
+    box-shadow: 0 8px 18px rgba(139, 44, 245, .2);
+    font: inherit;
+    font-size: .95rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .select-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 11px 22px rgba(139, 44, 245, .28);
+  }
+
+  .empty-state {
+    max-width: 680px;
+    margin: 30px auto 0;
+    padding: 42px 28px;
+    border: 1px solid #eadcf4;
+    border-radius: 24px;
+    background: #fff;
+    text-align: center;
+    box-shadow: 0 14px 35px rgba(39, 25, 70, .06);
+  }
+
+  .empty-state-icon {
+    margin-bottom: 10px;
+    font-size: 2.3rem;
+  }
+
+  .empty-state h2 {
+    margin: 0 0 10px;
+    color: var(--ink);
+  }
+
+  .empty-state p {
+    margin: 0 0 22px;
+    color: var(--muted);
+  }
+
+  .empty-state .back-link {
+    display: inline-block;
+    padding: 10px 17px;
+    border-radius: 12px;
+    color: #fff;
+    background: var(--purple);
+  }
+
+  .empty-state .back-link:hover {
+    text-decoration: none;
+  }
+
+  @media (max-width: 920px) {
+    .place-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 620px) {
+    .place-page {
+      padding-top: 14px;
+    }
+
+    .place-hero {
+      padding: 25px 20px;
+      border-radius: 22px;
+    }
+
+    .place-toolbar {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .place-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .place-card {
+      min-height: 0;
+      padding: 23px 20px;
+    }
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<h1>{{ title }}</h1>
-<p>TODO: page 2 content</p>
+<section class="place-page">
+  <div class="page-user-row">
+    <div class="page-user-badge" id="page-user-badge" hidden>
+      <span>👤 <span class="page-user-name" id="page-user-name"></span></span>
+      <button class="page-user-logout" id="page-user-logout" type="button">ออกจากระบบ</button>
+    </div>
+  </div>
+
+  <header class="place-hero">
+    <p class="place-eyebrow">✦ พื้นที่นัดพบและออกกำลังกาย ม.อุบลราชธานี</p>
+    <h1 class="place-heading">เลือกสถานที่นัดพบที่เหมาะกับคุณ</h1>
+    {% if selected_activity %}
+      <p class="place-subheading">
+        เลือกสถานที่ที่มีกิจกรรม {{ selected_activity }} และดูกลุ่มที่เปิดรับ
+      </p>
+      <div class="selected-activity">กิจกรรมที่เลือก · {{ selected_activity }}</div>
+    {% else %}
+      <p class="place-subheading">เลือกกิจกรรมก่อน เพื่อดูสถานที่และกลุ่มที่เกี่ยวข้อง</p>
+    {% endif %}
+  </header>
+
+  {% if page_state == "ready" %}
+    <div class="place-toolbar">
+      <p class="place-result-count">พบ {{ places|length }} สถานที่สำหรับกิจกรรม {{ selected_activity }}</p>
+      <a class="back-link" href="/page1">← กลับไปเลือกกิจกรรม</a>
+    </div>
+
+    <div class="place-grid">
+      {% for place in places %}
+        <article class="place-card">
+          <div class="card-topline">
+            <div class="place-icon" aria-hidden="true">📍</div>
+            {% if place.any_open %}
+              <span class="status-badge open">เปิดรับ</span>
+            {% else %}
+              <span class="status-badge full">เต็ม</span>
+            {% endif %}
+          </div>
+
+          <h2 class="place-name">{{ place.name }}</h2>
+          <p class="activity-line">กิจกรรม: {{ selected_activity }}</p>
+
+          <div class="metric-grid">
+            <div class="metric">
+              <strong>{{ place.group_count }} กลุ่ม</strong>
+              <span>กลุ่มที่เกี่ยวข้อง</span>
+            </div>
+            <div class="metric">
+              <strong>{{ place.total_members }} / {{ place.total_capacity }} คน</strong>
+              <span>สมาชิก / ความจุ</span>
+            </div>
+            <div class="metric">
+              <strong>เหลือ {{ place.remaining_spaces }} ที่</strong>
+              <span>พื้นที่ว่างรวม</span>
+            </div>
+            <div class="metric">
+              <strong>เปิดรับ {{ place.open_groups }} กลุ่ม</strong>
+              <span>เต็ม {{ place.full_groups }} กลุ่ม</span>
+            </div>
+          </div>
+
+          <div class="group-details">
+            <p><strong>กลุ่ม:</strong> {{ place.group_names|join(", ") }}</p>
+            <p><strong>วันที่:</strong> {{ place.dates|join(", ") }}</p>
+          </div>
+
+          <form class="select-form" action="/page3" method="get">
+            <input type="hidden" name="activity" value="{{ selected_activity }}">
+            <input type="hidden" name="place" value="{{ place.name }}">
+            <button class="select-button" type="submit">
+              เลือกสถานที่นี้ &amp; ดูกลุ่มนัด →
+            </button>
+          </form>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-state-icon" aria-hidden="true">🧭</div>
+      {% if page_state == "missing_activity" %}
+        <h2>กรุณาเลือกกิจกรรมก่อน</h2>
+        <p>หน้านี้ต้องรับกิจกรรมที่คุณเลือกจากหน้าแรก</p>
+      {% elif page_state == "unknown_activity" %}
+        <h2>ไม่พบกิจกรรม “{{ selected_activity }}”</h2>
+        <p>กิจกรรมนี้ไม่มีอยู่ในข้อมูลปัจจุบัน กรุณากลับไปเลือกกิจกรรมอีกครั้ง</p>
+      {% else %}
+        <h2>ยังไม่พบสถานที่สำหรับกิจกรรมนี้</h2>
+        <p>พบกิจกรรม {{ selected_activity }} แต่ยังไม่มีชื่อสถานที่ที่แสดงได้</p>
+      {% endif %}
+      <a class="back-link" href="/page1">กลับไปเลือกกิจกรรม</a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    const storageKey = "display_name";
+    const userBadge = document.getElementById("page-user-badge");
+    const userName = document.getElementById("page-user-name");
+    const logoutButton = document.getElementById("page-user-logout");
+
+    // Read the nickname saved by the Home page.
+    const displayName = sessionStorage.getItem(storageKey) || "";
+    if (displayName !== "") {
+      userName.textContent = displayName;
+      userBadge.hidden = false;
+    }
+
+    // Remove the nickname, then return to the Home page.
+    logoutButton.addEventListener("click", function () {
+      sessionStorage.removeItem(storageKey);
+      window.location.href = "/";
+    });
+  }());
+</script>
 {% endblock %}

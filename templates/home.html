@@ -1,17 +1,929 @@
 {% extends "base.html" %}
 {# home.html — the front page. You may edit this freely. #}
-{% block content %}
-<section class="hero">
-  <h1>{{ team.group.topic }}</h1>
-  <p class="lead">{{ team.group.description }}</p>
-</section>
 
-<section class="cards">
-  {% for p in nav %}
-  <a class="card" href="{{ url_for('page', name=p.name) }}">
-    <span class="card-kicker">{{ p.name }}</span>
-    <span class="card-title">{{ p.title }}</span>
-  </a>
-  {% endfor %}
-</section>
+{% block head %}
+<style>
+  .home-page {
+    --home-ink: #172033;
+    --home-muted: #6f7789;
+    --home-purple: #8b24f5;
+    --home-pink: #f43f83;
+    position: relative;
+    width: min(1180px, calc(100vw - 24px));
+    margin-left: 50%;
+    padding: 32px clamp(18px, 4vw, 46px) 52px;
+    overflow: hidden;
+    transform: translateX(-50%);
+    border: 1px solid rgba(233, 222, 235, .9);
+    border-radius: 34px;
+    background:
+      radial-gradient(circle at 7% 8%, rgba(255, 92, 170, .14), transparent 22%),
+      radial-gradient(circle at 91% 10%, rgba(255, 190, 58, .15), transparent 20%),
+      radial-gradient(circle at 91% 86%, rgba(49, 210, 161, .14), transparent 25%),
+      radial-gradient(circle at 8% 91%, rgba(76, 137, 255, .12), transparent 23%),
+      linear-gradient(145deg, #fffaf4 0%, #fff 48%, #fbf8ff 100%);
+    color: var(--home-ink);
+  }
+
+  .home-page::before,
+  .home-page::after {
+    position: absolute;
+    z-index: 0;
+    border-radius: 50%;
+    content: "";
+    pointer-events: none;
+  }
+
+  .home-page::before {
+    top: 420px;
+    left: -115px;
+    width: 260px;
+    height: 260px;
+    background: rgba(189, 86, 255, .07);
+  }
+
+  .home-page::after {
+    right: -100px;
+    bottom: 280px;
+    width: 230px;
+    height: 230px;
+    background: rgba(38, 195, 242, .07);
+  }
+
+  .home-hero,
+  .home-highlights,
+  .home-section {
+    position: relative;
+    z-index: 1;
+  }
+
+  .home-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(330px, .92fr);
+    align-items: center;
+    gap: clamp(28px, 4vw, 52px);
+    min-height: 420px;
+    padding: 24px 0 34px;
+  }
+
+  .home-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 14px;
+    padding: 7px 13px;
+    border: 1px solid #ffd1e3;
+    border-radius: 999px;
+    color: #d92c70;
+    background: rgba(255, 241, 247, .9);
+    font-size: .84rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+  }
+
+  .home-title {
+    max-width: 680px;
+    margin: 0;
+    color: var(--home-ink);
+    font-size: clamp(2.1rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -.045em;
+    line-height: 1.15;
+  }
+
+  .home-title-accent {
+    color: transparent;
+    background: linear-gradient(90deg, #8b24f5, #f43f83, #ff8a24);
+    background-clip: text;
+    -webkit-background-clip: text;
+  }
+
+  .home-lead {
+    max-width: 650px;
+    margin: 16px 0 0;
+    color: var(--home-muted);
+    font-size: 1.08rem;
+    line-height: 1.8;
+  }
+
+  .home-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .home-login-panel {
+    max-width: 560px;
+    margin-top: 18px;
+    padding: 14px;
+    border: 1px solid rgba(226, 211, 238, .95);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, .78);
+    box-shadow: 0 10px 28px rgba(64, 43, 82, .07);
+    backdrop-filter: blur(8px);
+  }
+
+  .home-login-label {
+    display: block;
+    margin: 0 0 8px;
+    color: #625b70;
+    font-size: .86rem;
+    font-weight: 700;
+  }
+
+  .home-login-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 9px;
+  }
+
+  .home-login-field {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .home-login-form[hidden],
+  .home-user-state[hidden] {
+    display: none;
+  }
+
+  .home-login-input {
+    min-width: 0;
+    flex: 1;
+    padding: 11px 14px;
+    border: 1px solid #ddd5e3;
+    border-radius: 13px;
+    color: var(--home-ink);
+    background: #fff;
+    font: inherit;
+    font-size: .95rem;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+  }
+
+  .home-login-input:focus {
+    border-color: #c69bea;
+    box-shadow: 0 0 0 3px rgba(139, 36, 245, .1);
+  }
+
+  .home-login-button,
+  .home-logout-button {
+    flex: 0 0 auto;
+    padding: 10px 16px;
+    border-radius: 13px;
+    font: inherit;
+    font-size: .92rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .2s, box-shadow .2s;
+  }
+
+  .home-login-button {
+    border: 0;
+    color: #fff;
+    background: linear-gradient(100deg, #8b24f5, #d826d5);
+    box-shadow: 0 7px 16px rgba(139, 36, 245, .18);
+  }
+
+  .home-logout-button {
+    border: 1px solid #e4d7ea;
+    color: #6a328f;
+    background: #fff;
+  }
+
+  .home-login-button:hover,
+  .home-logout-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 9px 19px rgba(91, 53, 111, .15);
+  }
+
+  .home-user-state {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .home-greeting {
+    min-width: 0;
+    margin: 0;
+    color: #4c3d57;
+    font-size: 1rem;
+    overflow-wrap: anywhere;
+  }
+
+  .home-greeting strong {
+    color: #7a25bb;
+  }
+
+  .home-login-note {
+    display: block;
+    margin-top: 8px;
+    color: #898292;
+    font-size: .78rem;
+  }
+
+  .home-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 12px 21px;
+    border: 1px solid transparent;
+    border-radius: 16px;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 700;
+    transition: transform .2s, box-shadow .2s, border-color .2s;
+  }
+
+  .home-cta:hover {
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+
+  .home-cta-primary {
+    color: #fff;
+    background: linear-gradient(100deg, var(--home-purple), #d826d5);
+    box-shadow: 0 11px 24px rgba(139, 36, 245, .22);
+  }
+
+  .home-cta-primary:hover {
+    color: #fff;
+    box-shadow: 0 15px 30px rgba(139, 36, 245, .3);
+  }
+
+  .home-cta-secondary {
+    border-color: #e6ddeb;
+    color: #5f2c89;
+    background: rgba(255, 255, 255, .9);
+    box-shadow: 0 8px 20px rgba(55, 39, 69, .07);
+  }
+
+  .home-cta-secondary:hover {
+    border-color: #d4b6ef;
+    color: #5f2c89;
+    box-shadow: 0 12px 25px rgba(55, 39, 69, .11);
+  }
+
+  .home-visual {
+    position: relative;
+    display: grid;
+    min-height: 350px;
+    place-items: center;
+  }
+
+  .home-visual-orbit {
+    position: absolute;
+    width: min(365px, 88vw);
+    aspect-ratio: 1;
+    border: 1px dashed rgba(139, 36, 245, .24);
+    border-radius: 50%;
+  }
+
+  .home-visual-orbit::before,
+  .home-visual-orbit::after {
+    position: absolute;
+    border-radius: 50%;
+    content: "";
+  }
+
+  .home-visual-orbit::before {
+    inset: 34px;
+    border: 1px dashed rgba(244, 63, 131, .2);
+  }
+
+  .home-visual-orbit::after {
+    inset: 76px;
+    background: linear-gradient(145deg, rgba(255, 228, 241, .8), rgba(230, 244, 255, .8));
+    filter: blur(2px);
+  }
+
+  .home-visual-card {
+    position: relative;
+    z-index: 2;
+    width: min(270px, 75vw);
+    padding: 28px 24px;
+    border: 1px solid rgba(224, 207, 239, .9);
+    border-radius: 30px;
+    background: rgba(255, 255, 255, .9);
+    box-shadow: 0 25px 55px rgba(72, 42, 92, .15);
+    text-align: center;
+    backdrop-filter: blur(8px);
+  }
+
+  .home-visual-icon {
+    display: grid;
+    width: 88px;
+    height: 88px;
+    margin: 0 auto 15px;
+    place-items: center;
+    border-radius: 28px;
+    background: linear-gradient(145deg, #fff0f6, #f1ebff);
+    font-size: 3rem;
+  }
+
+  .home-visual-card strong {
+    display: block;
+    font-size: 1.25rem;
+  }
+
+  .home-visual-card span {
+    display: block;
+    margin-top: 5px;
+    color: var(--home-muted);
+    font-size: .9rem;
+  }
+
+  .home-float {
+    position: absolute;
+    z-index: 3;
+    display: grid;
+    width: 62px;
+    height: 62px;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, .9);
+    border-radius: 20px;
+    box-shadow: 0 13px 30px rgba(54, 39, 71, .13);
+    font-size: 1.8rem;
+  }
+
+  .home-float-one {
+    top: 42px;
+    left: 11%;
+    background: #fff4d7;
+    transform: rotate(-8deg);
+  }
+
+  .home-float-two {
+    top: 64px;
+    right: 7%;
+    background: #e8fbf4;
+    transform: rotate(8deg);
+  }
+
+  .home-float-three {
+    right: 12%;
+    bottom: 39px;
+    background: #eef6ff;
+    transform: rotate(-5deg);
+  }
+
+  .home-float-four {
+    bottom: 52px;
+    left: 8%;
+    background: #fff0f4;
+    transform: rotate(7deg);
+  }
+
+  .home-highlights {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 0 0 50px;
+    overflow: hidden;
+    border: 1px solid #ebe1ee;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, .82);
+    box-shadow: 0 15px 36px rgba(56, 41, 70, .07);
+  }
+
+  .home-highlight {
+    min-width: 0;
+    padding: 20px;
+    border-right: 1px solid #eee7f0;
+    text-align: center;
+  }
+
+  .home-highlight:last-child {
+    border-right: 0;
+  }
+
+  .home-highlight strong,
+  .home-highlight span {
+    display: block;
+  }
+
+  .home-highlight strong {
+    color: var(--home-ink);
+    font-size: 1rem;
+  }
+
+  .home-highlight span {
+    margin-top: 3px;
+    color: var(--home-muted);
+    font-size: .82rem;
+  }
+
+  .home-section {
+    margin-top: 52px;
+  }
+
+  .home-section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 20px;
+  }
+
+  .home-section-kicker {
+    margin: 0 0 7px;
+    color: var(--home-pink);
+    font-size: .82rem;
+    font-weight: 700;
+    letter-spacing: .07em;
+  }
+
+  .home-section-title {
+    margin: 0;
+    color: var(--home-ink);
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    line-height: 1.3;
+  }
+
+  .home-section-note {
+    max-width: 380px;
+    margin: 0;
+    color: var(--home-muted);
+    text-align: right;
+  }
+
+  .home-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .home-step {
+    position: relative;
+    min-width: 0;
+    padding: 24px;
+    overflow: hidden;
+    border: 1px solid #ffd4df;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, .93);
+    box-shadow: 0 14px 34px rgba(53, 39, 67, .07);
+  }
+
+  .home-step:nth-child(2) { border-color: #bdebdc; }
+  .home-step:nth-child(3) { border-color: #d9c8ff; }
+
+  .home-step-number {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    margin-bottom: 18px;
+    place-items: center;
+    border-radius: 14px;
+    color: #c92d69;
+    background: #fff0f5;
+    font-weight: 700;
+  }
+
+  .home-step:nth-child(2) .home-step-number {
+    color: #08795a;
+    background: #e5faf2;
+  }
+
+  .home-step:nth-child(3) .home-step-number {
+    color: #6f2bbb;
+    background: #f3ebff;
+  }
+
+  .home-step h3 {
+    margin: 0 0 8px;
+    color: var(--home-ink);
+    font-size: 1.375rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .home-step p {
+    min-height: 50px;
+    margin: 0;
+    color: var(--home-muted);
+    font-size: .95rem;
+    line-height: 1.7;
+  }
+
+  .home-step a {
+    display: inline-flex;
+    margin-top: 17px;
+    color: #7625bd;
+    text-decoration: none;
+    font-size: .9rem;
+    font-weight: 700;
+  }
+
+  .home-step a:hover {
+    text-decoration: underline;
+  }
+
+  .home-entry-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .home-entry-card {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    min-height: 148px;
+    align-items: center;
+    gap: 18px;
+    overflow: hidden;
+    padding: 24px;
+    border: 1px solid #eadcf2;
+    border-radius: 25px;
+    color: var(--home-ink);
+    background: rgba(255, 255, 255, .93);
+    box-shadow: 0 13px 32px rgba(55, 40, 69, .07);
+    text-decoration: none;
+    transition: transform .2s, box-shadow .2s;
+  }
+
+  .home-entry-card::before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 7px;
+    background: linear-gradient(#ff8a24, #ffbf2f);
+    content: "";
+  }
+
+  .home-entry-card:nth-child(4n + 2)::before { background: linear-gradient(#14c98e, #20aee8); }
+  .home-entry-card:nth-child(4n + 3)::before { background: linear-gradient(#f43f83, #d72bd4); }
+  .home-entry-card:nth-child(4n + 4)::before { background: linear-gradient(#8156ff, #408bff); }
+
+  .home-entry-card:hover {
+    color: var(--home-ink);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 42px rgba(55, 40, 69, .13);
+    text-decoration: none;
+  }
+
+  .home-entry-icon {
+    display: grid;
+    width: 62px;
+    height: 62px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 19px;
+    background: #fff5df;
+    font-size: 1.75rem;
+  }
+
+  .home-entry-card:nth-child(4n + 2) .home-entry-icon { background: #e8fbf4; }
+  .home-entry-card:nth-child(4n + 3) .home-entry-icon { background: #fff0f5; }
+  .home-entry-card:nth-child(4n + 4) .home-entry-icon { background: #eef2ff; }
+
+  .home-entry-copy {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .home-entry-kicker {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--home-muted);
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+  }
+
+  .home-entry-title {
+    display: block;
+    overflow-wrap: anywhere;
+    color: var(--home-ink);
+    font-size: 1.375rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .home-entry-arrow {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 50%;
+    color: #7722bf;
+    background: #f6ecff;
+    font-weight: 700;
+  }
+
+  @media (max-width: 900px) {
+    .home-hero {
+      grid-template-columns: 1fr;
+      padding-top: 18px;
+    }
+
+    .home-copy {
+      max-width: 760px;
+    }
+
+    .home-visual {
+      min-height: 355px;
+    }
+
+    .home-highlights {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-highlight:nth-child(2) {
+      border-right: 0;
+    }
+
+    .home-highlight:nth-child(-n + 2) {
+      border-bottom: 1px solid #eee7f0;
+    }
+
+    .home-steps {
+      grid-template-columns: 1fr;
+    }
+
+    .home-step p {
+      min-height: 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .home-page {
+      width: calc(100vw - 16px);
+      padding: 25px 16px 40px;
+      border-radius: 25px;
+    }
+
+    .home-hero {
+      min-height: 0;
+      gap: 18px;
+      padding-bottom: 24px;
+    }
+
+    .home-actions {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .home-cta {
+      width: 100%;
+    }
+
+    .home-login-form,
+    .home-user-state {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .home-login-button,
+    .home-logout-button {
+      width: 100%;
+    }
+
+    .home-visual {
+      min-height: 315px;
+      transform: scale(.9);
+    }
+
+    .home-highlights {
+      grid-template-columns: 1fr;
+      margin-bottom: 42px;
+    }
+
+    .home-highlight,
+    .home-highlight:nth-child(2) {
+      border-right: 0;
+      border-bottom: 1px solid #eee7f0;
+    }
+
+    .home-highlight:last-child {
+      border-bottom: 0;
+    }
+
+    .home-section {
+      margin-top: 43px;
+    }
+
+    .home-section-heading {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .home-section-note {
+      text-align: left;
+    }
+
+    .home-entry-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .home-entry-card {
+      min-height: 135px;
+      padding: 20px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="home-page">
+  <section class="home-hero">
+    <div class="home-copy">
+      <p class="home-eyebrow">✨ ACTIVITY BUDDY · ม.อุบลราชธานี</p>
+      <h1 class="home-title">
+        {{ team.group.topic }}
+        <span class="home-title-accent">ไปด้วยกัน</span>
+      </h1>
+      <p class="home-lead">{{ team.group.description }}</p>
+
+      <div class="home-actions">
+        <a class="home-cta home-cta-primary" href="{{ url_for('page', name='page1') }}">
+          เริ่มค้นหากิจกรรม <span aria-hidden="true">→</span>
+        </a>
+        <a class="home-cta home-cta-secondary" href="{{ url_for('page', name='team') }}">
+          รู้จักทีมของเรา
+        </a>
+      </div>
+
+      <div class="home-login-panel">
+        <form class="home-login-form" id="home-login-form">
+          <div class="home-login-field">
+            <label class="home-login-label" for="home-display-name">เข้าสู่ระบบด้วยชื่อเล่น</label>
+            <input
+              class="home-login-input"
+              id="home-display-name"
+              name="display_name"
+              type="text"
+              maxlength="40"
+              autocomplete="nickname"
+              placeholder="ชื่อหรือชื่อเล่น"
+              required
+            >
+          </div>
+          <button class="home-login-button" type="submit">เข้าสู่ระบบ</button>
+        </form>
+
+        <div class="home-user-state" id="home-user-state" aria-live="polite" hidden>
+          <p class="home-greeting">สวัสดี, <strong id="home-greeting-name"></strong> 👋</p>
+          <button class="home-logout-button" id="home-logout-button" type="button">ออกจากระบบ</button>
+        </div>
+        <small class="home-login-note">จดจำเฉพาะชื่อเล่นในแท็บนี้ และไม่ใช้รหัสผ่าน</small>
+      </div>
+    </div>
+
+    <div class="home-visual" aria-label="ภาพตกแต่งกิจกรรมและการพบเพื่อน">
+      <div class="home-visual-orbit" aria-hidden="true"></div>
+      <div class="home-float home-float-one" aria-hidden="true">🏃</div>
+      <div class="home-float home-float-two" aria-hidden="true">🏸</div>
+      <div class="home-float home-float-three" aria-hidden="true">⚽</div>
+      <div class="home-float home-float-four" aria-hidden="true">🌈</div>
+      <div class="home-visual-card">
+        <div class="home-visual-icon" aria-hidden="true">🎯</div>
+        <strong>เลือกสิ่งที่ชอบ</strong>
+        <span>แล้วออกไปทำกิจกรรมด้วยกัน</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-highlights" aria-label="จุดเด่นของโครงการ">
+    <div class="home-highlight">
+      <strong>{{ nav|length }} จุดเริ่มต้น</strong>
+      <span>เข้าถึงทุกหน้าหลักของโครงการ</span>
+    </div>
+    <div class="home-highlight">
+      <strong>เลือกกิจกรรม</strong>
+      <span>เริ่มจากสิ่งที่คุณสนใจ</span>
+    </div>
+    <div class="home-highlight">
+      <strong>เลือกสถานที่</strong>
+      <span>ดูพื้นที่นัดพบที่เกี่ยวข้อง</span>
+    </div>
+    <div class="home-highlight">
+      <strong>พบเพื่อนใหม่</strong>
+      <span>ร่วมกลุ่มและทำกิจกรรมด้วยกัน</span>
+    </div>
+  </section>
+
+  <section class="home-section">
+    <div class="home-section-heading">
+      <div>
+        <p class="home-section-kicker">HOW IT WORKS</p>
+        <h2 class="home-section-title">เริ่มต้นง่าย ๆ ใน 3 ขั้นตอน</h2>
+      </div>
+      <p class="home-section-note">จากกิจกรรมที่ชอบ ไปสู่สถานที่และกลุ่มเพื่อนที่ใช่</p>
+    </div>
+
+    <div class="home-steps">
+      <article class="home-step">
+        <span class="home-step-number">01</span>
+        <h3>เลือกกิจกรรม</h3>
+        <p>ค้นหาและเลือกกิจกรรมที่คุณสนใจจากหน้ารวมกิจกรรม</p>
+        <a href="{{ url_for('page', name='page1') }}">ไปเลือกกิจกรรม →</a>
+      </article>
+      <article class="home-step">
+        <span class="home-step-number">02</span>
+        <h3>เลือกสถานที่นัดพบ</h3>
+        <p>ดูสถานที่ที่เกี่ยวข้องกับกิจกรรมและข้อมูลกลุ่มที่มีอยู่</p>
+        <a href="{{ url_for('page', name='page2') }}">ดูหน้าสถานที่ →</a>
+      </article>
+      <article class="home-step">
+        <span class="home-step-number">03</span>
+        <h3>เข้าร่วมกลุ่มกิจกรรม</h3>
+        <p>ไปยังหน้ากลุ่มนัดเพื่อพบเพื่อนและร่วมทำกิจกรรมด้วยกัน</p>
+        <a href="{{ url_for('page', name='page3') }}">ดูหน้ากลุ่มนัด →</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="home-section">
+    <div class="home-section-heading">
+      <div>
+        <p class="home-section-kicker">EXPLORE PROJECT</p>
+        <h2 class="home-section-title">เลือกหน้าที่ต้องการไปต่อ</h2>
+      </div>
+      <p class="home-section-note">ลิงก์เดิมของโครงการ พร้อมรูปแบบการ์ดที่เข้าถึงง่ายขึ้น</p>
+    </div>
+
+    <div class="home-entry-grid">
+      {% for p in nav %}
+      <a class="home-entry-card" href="{{ url_for('page', name=p.name) }}">
+        <span class="home-entry-icon" aria-hidden="true">
+          {% if p.name == "page1" %}🎯
+          {% elif p.name == "page2" %}📍
+          {% elif p.name == "page3" %}👥
+          {% else %}🌟{% endif %}
+        </span>
+        <span class="home-entry-copy">
+          <span class="home-entry-kicker">{{ p.name }}</span>
+          <span class="home-entry-title">{{ p.title }}</span>
+        </span>
+        <span class="home-entry-arrow" aria-hidden="true">→</span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    const storageKey = "display_name";
+    const loginForm = document.getElementById("home-login-form");
+    const nameInput = document.getElementById("home-display-name");
+    const userState = document.getElementById("home-user-state");
+    const greetingName = document.getElementById("home-greeting-name");
+    const logoutButton = document.getElementById("home-logout-button");
+
+    function showUser(name) {
+      const isLoggedIn = name !== "";
+      loginForm.hidden = isLoggedIn;
+      userState.hidden = !isLoggedIn;
+      greetingName.textContent = name;
+    }
+
+    // Read the saved nickname when the Home page opens.
+    let rememberedName = "";
+    try {
+      rememberedName = sessionStorage.getItem(storageKey) || "";
+    } catch (error) {
+      rememberedName = "";
+    }
+    showUser(rememberedName);
+
+    // Save a non-empty nickname and switch to the greeting.
+    loginForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      const displayName = nameInput.value.trim();
+      if (displayName === "") {
+        return;
+      }
+
+      try {
+        sessionStorage.setItem(storageKey, displayName);
+      } catch (error) {
+        // The greeting still works even if browser storage is unavailable.
+      }
+      showUser(displayName);
+      nameInput.value = "";
+    });
+
+    // Remove only the nickname and show the login form again.
+    logoutButton.addEventListener("click", function () {
+      try {
+        sessionStorage.removeItem(storageKey);
+      } catch (error) {
+        // There is nothing else to clear when storage is unavailable.
+      }
+      showUser("");
+      nameInput.focus();
+    });
+  }());
+</script>
 {% endblock %}

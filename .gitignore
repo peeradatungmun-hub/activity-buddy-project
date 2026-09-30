@@ -7,3 +7,4 @@ venv/
 Thumbs.db
 # uploaded photos are named <name>-<timestamp>.<ext>; keep them small or ignore them:
 # static/img/*-1*.jpg
+activity-buddy-project/
