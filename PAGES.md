@@ -3,40 +3,41 @@
 กรอกสัปดาห์ที่ 1 แล้วอัปเดตทุกครั้งที่ commit — อาจารย์ดูไฟล์นี้ + `git log` แทนการถาม
 
 **หัวข้อ:** ระบบแนะนำสถานที่จัดกิจกรรมและหาเพื่อนร่วมกิจกรรม
-**data.json เก็บอะไร (field):** ______________________
-**คัดลอก data.json → data.sample.json แล้ว:** [ ]
+**data.json เก็บอะไร (field):** activity, place, group_name, date, members, max_members, status
+**คัดลอก data.json → data.sample.json แล้ว:** [✓]
 
 ## team — หน้าทีม (สัปดาห์ 0)
-- [ ] กรอก `team.json` ครบทุกคน (ชื่อ, รหัส, บทบาท, งานที่รับผิดชอบ)
-- [ ] เปิด /team เห็นชื่อทุกคน
+- [✓] กรอก `team.json` ครบทุกคน (ชื่อ, รหัส, บทบาท, งานที่รับผิดชอบ)
+- [✓] เปิด /team เห็นชื่อทุกคน
 - [ ] commit `team: members filled` + push
 
 ## page1 — ผู้รับผิดชอบ: Pannawat· แบบจาก catalog: __________
+## page1 — ผู้รับผิดชอบ: ปัณณวัฒน์ จันเพ็ญ · แบบจาก catalog: __________
 - [ ] คัดลอกจาก catalog แล้วเปลี่ยน TITLE
 - [ ] ใช้ field ของ data.json ของกลุ่ม
 - [ ] เปิด /page1 ได้ ไม่มี TODO
 - [ ] `check.bat` → /page1 ✓ ไม่มี warning
 - [ ] commit `page1: ...`
 
-## page2 — ผู้รับผิดชอบ: __________ · แบบจาก catalog: __________
+## page2 — ผู้รับผิดชอบ: นางสาวพีรดา ตั้งมั่น · แบบจาก catalog: __________
 - [ ] คัดลอกจาก catalog แล้วเปลี่ยน TITLE
 - [ ] ใช้ field ของ data.json ของกลุ่ม
 - [ ] เปิด /page2 ได้ ไม่มี TODO
 - [ ] `check.bat` → /page2 ✓ ไม่มี warning
 - [ ] commit `page2: ...`
 
-## page3 — ผู้รับผิดชอบ: __________ · แบบจาก catalog: __________
+## page3 — ผู้รับผิดชอบ: นางสาวสกาว แก้วเขียว · แบบจาก catalog: __________
 - [ ] คัดลอกจาก catalog แล้วเปลี่ยน TITLE
 - [ ] ใช้ field ของ data.json ของกลุ่ม
 - [ ] เปิด /page3 ได้ ไม่มี TODO
 - [ ] `check.bat` → /page3 ✓ ไม่มี warning
 - [ ] commit `page3: ...`
 
-## models.py — ผู้รับผิดชอบ: __________
-- [ ] เปลี่ยนชื่อ class ให้ตรงหัวข้อ, field ตรง data.json
-- [ ] method 1 ตัวที่มีประโยชน์ (ไม่เหลือ TODO)
+## models.py — ผู้รับผิดชอบ: นายปริญ ชัยมงคล
+- [✓] เปลี่ยนชื่อ class ให้ตรงหัวข้อ, field ตรง data.json
+- [✓] method 1 ตัวที่มีประโยชน์ (ไม่เหลือ TODO)
 - [ ] มีหน้าใดหน้าหนึ่งใช้ class นี้ (เช่น แบบ detail)
-- [ ] `python check_project.py` → class ✓ 9/9
+- [✓] `python check_project.py` → class ✓ 9/9
 - [ ] commit `models: ...`
 
 ## ส่งงาน
