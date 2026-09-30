@@ -11,7 +11,7 @@
 - [ ] เปิด /team เห็นชื่อทุกคน
 - [ ] commit `team: members filled` + push
 
-## page1 — ผู้รับผิดชอบ: __________ · แบบจาก catalog: __________
+## page1 — ผู้รับผิดชอบ: Pannawat· แบบจาก catalog: __________
 - [ ] คัดลอกจาก catalog แล้วเปลี่ยน TITLE
 - [ ] ใช้ field ของ data.json ของกลุ่ม
 - [ ] เปิด /page1 ได้ ไม่มี TODO
