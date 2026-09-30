@@ -1,158 +1,202 @@
 {% extends "base.html" %}
 {% block head %}
 <style>
-  .page3 { --p3-ink: #303951; --p3-muted: #7b8497; --p3-line: #ececf4; color: var(--p3-ink); width: 100%; }
+  .page3 { --p3-ink: #303951; --p3-muted: #758198; --p3-line: #e9eaf2; color: var(--p3-ink); }
   .page3 * { box-sizing: border-box; }
-  .page3-hero { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 32px; overflow: hidden; min-height: 245px; padding: clamp(28px, 5vw, 52px); border-radius: 28px; color: #fff; background: linear-gradient(112deg, #5dbce9 0%, #648fe5 46%, #9875df 100%); box-shadow: 0 16px 34px rgba(105, 112, 201, .2); }
-  .page3-hero::before, .page3-hero::after { position: absolute; z-index: 0; content: ""; border: 1px solid rgba(255,255,255,.18); border-radius: 50%; pointer-events: none; }
-  .page3-hero::before { width: 290px; height: 290px; right: 21%; top: -210px; }
-  .page3-hero::after { width: 230px; height: 230px; right: 5%; bottom: -180px; }
-  .page3-hero-copy, .page3-hero-action { position: relative; z-index: 1; }
-  .page3-hero-copy { max-width: 640px; }
-  .page3-hero h1 { margin: 0 0 12px; max-width: 650px; color: #fff; font-size: clamp(27px, 4vw, 39px); line-height: 1.35; letter-spacing: -.4px; }
-  .page3-hero p { max-width: 620px; margin: 0; color: rgba(255,255,255,.91); font-size: 15px; line-height: 1.8; }
-  .page3-create { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; padding: 0 21px; border: 1px solid rgba(255,255,255,.6); border-radius: 999px; color: #735fc2; background: #fff; box-shadow: 0 8px 20px rgba(55,55,130,.16); font: inherit; font-size: 14px; font-weight: 750; white-space: nowrap; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease; }
-  .page3-create:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(55,55,130,.25); }
-  .page3-category-wrap { margin: 26px 0 33px; }
-  .page3-categories { display: flex; gap: 9px; overflow-x: auto; padding: 3px 2px 11px; scrollbar-width: thin; scrollbar-color: #d7d2f4 transparent; }
-  .page3-category { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 0 15px; border: 1px solid #ecebf4; border-radius: 999px; color: #535d72; background: #fff; box-shadow: 0 3px 10px rgba(51,61,91,.045); font: inherit; font-size: 13px; font-weight: 650; white-space: nowrap; cursor: pointer; transition: transform .16s ease, box-shadow .16s ease; }
-  .page3-category:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(51,61,91,.1); }
-  .page3-category-active { border-color: transparent; color: #fff; background: linear-gradient(110deg, #ee79b5, #9674e4); box-shadow: 0 5px 14px rgba(176,112,200,.22); }
-  .page3-section-head { display: flex; align-items: end; justify-content: space-between; gap: 14px; margin-bottom: 17px; }
-  .page3-section-head h2 { margin: 0; color: var(--p3-ink); font-size: 23px; }
-  .page3-section-head p { margin: 0; color: var(--p3-muted); font-size: 13px; }
-  .page3-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 17px; align-items: stretch; }
-  .page3-card { display: flex; flex-direction: column; min-width: 0; padding: 19px; border: 1px solid var(--p3-line); border-radius: 21px; background: #fff; box-shadow: 0 7px 21px rgba(47,58,93,.06); transition: transform .2s ease, box-shadow .2s ease; }
-  .page3-card:hover { transform: translateY(-3px); box-shadow: 0 13px 28px rgba(47,58,93,.11); }
-  .page3-card:nth-child(4n+1) { --card-accent: #7bbfe8; --card-soft: #eef8ff; }
-  .page3-card:nth-child(4n+2) { --card-accent: #b483df; --card-soft: #f7f1ff; }
-  .page3-card:nth-child(4n+3) { --card-accent: #72bda9; --card-soft: #eef9f5; }
-  .page3-card:nth-child(4n) { --card-accent: #e4b965; --card-soft: #fff8e9; }
-  .page3-host { display: flex; align-items: center; gap: 11px; min-width: 0; margin-bottom: 15px; }
-  .page3-avatar { display: grid; flex: 0 0 46px; place-items: center; width: 46px; height: 46px; border: 1px solid rgba(100,115,160,.08); border-radius: 15px; color: var(--card-accent); background: var(--card-soft); font-size: 23px; }
-  .page3-host-info { min-width: 0; }
-  .page3-host-name { overflow: hidden; color: #303951; font-size: 14px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
-  .page3-host-year { overflow: hidden; margin-top: 2px; color: var(--p3-muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
-  .page3-host-badge { margin-left: auto; padding: 5px 10px; border: 1px solid #e4dcfb; border-radius: 999px; color: #7968bd; background: #f6f2ff; font-size: 11px; font-weight: 750; }
-  .page3-card h3 { margin: 0 0 11px; color: #303951; font-size: 17px; line-height: 1.5; }
-  .page3-card-description { margin: 0 0 14px; padding: 11px 13px; border: 1px solid #f0eef7; border-radius: 13px; color: #606b80; background: #faf9fd; font-size: 13px; line-height: 1.65; }
-  .page3-details { display: grid; grid-template-columns: minmax(0, .75fr) minmax(0, .75fr) minmax(0, 1.5fr); gap: 8px; margin-bottom: 13px; }
-  .page3-detail { min-width: 0; padding: 9px 10px; border-radius: 12px; background: var(--card-soft); }
-  .page3-detail-label { display: block; margin-bottom: 3px; color: #858da0; font-size: 10px; font-weight: 700; }
-  .page3-detail-value { display: block; overflow-wrap: anywhere; color: #46516a; font-size: 12px; font-weight: 650; line-height: 1.45; }
-  .page3-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-  .page3-tag { display: inline-block; max-width: 100%; overflow-wrap: anywhere; padding: 5px 9px; border: 1px solid #e9e7f3; border-radius: 999px; color: #79708f; background: #fbfaff; font-size: 10px; line-height: 1.35; }
-  .page3-card-bottom { display: flex; align-items: center; gap: 14px; margin-top: auto; padding-top: 13px; border-top: 1px solid #f0eff5; }
-  .page3-capacity { flex: 1; min-width: 0; }
-  .page3-capacity-line { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 6px; color: #68738a; font-size: 11px; }
-  .page3-capacity-line strong { color: #505c73; font-size: 12px; }
-  .page3-progress { height: 6px; overflow: hidden; border-radius: 999px; background: #eeedf4; }
-  .page3-progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #72c6e8, #aa83e5, #e887b8); }
-  .page3-join { flex: 0 0 auto; min-height: 39px; padding: 0 15px; border: 0; border-radius: 999px; color: #fff; background: linear-gradient(105deg, #6bbbe4, #9b78e0 65%, #d77fbe); box-shadow: 0 5px 13px rgba(126,112,207,.19); font: inherit; font-size: 12px; font-weight: 750; white-space: nowrap; cursor: pointer; transition: transform .17s ease, box-shadow .17s ease; }
-  .page3-join:hover { transform: translateY(-2px); box-shadow: 0 8px 17px rgba(126,112,207,.28); }
-  .page3 button:focus-visible { outline: 3px solid #efb8d6; outline-offset: 3px; }
-  @media (max-width: 760px) {
-    .page3-hero { align-items: flex-start; flex-direction: column; gap: 20px; }
-    .page3-hero-copy { max-width: 100%; }
-    .page3-section-head { align-items: flex-start; flex-direction: column; gap: 5px; }
-  }
-  @media (max-width: 620px) {
-    .page3-grid { grid-template-columns: minmax(0, 1fr); }
-  }
-  @media (max-width: 440px) {
-    .page3-hero { padding: 25px 20px; border-radius: 22px; }
-    .page3-hero h1 { font-size: 27px; }
-    .page3-card { padding: 15px; }
-    .page3-details { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .page3-detail:last-child { grid-column: 1 / -1; }
-    .page3-card-bottom { align-items: stretch; flex-direction: column; gap: 11px; }
-    .page3-join { width: 100%; min-height: 43px; }
-  }
+  .page3-hero { position: relative; isolation: isolate; display: flex; align-items: center; justify-content: space-between; gap: 28px; overflow: hidden; min-height: 230px; padding: clamp(28px, 5vw, 48px); border-radius: 27px; color: #fff; background: linear-gradient(112deg,#58bce9 0%,#608fe5 47%,#9674dd 100%); box-shadow: 0 15px 34px rgba(102,111,196,.19); }
+  .page3-hero::before,.page3-hero::after { position:absolute; z-index:-1; content:""; border:1px solid rgba(255,255,255,.2); border-radius:50%; }
+  .page3-hero::before { width:270px;height:270px;right:24%;top:-205px; }
+  .page3-hero::after { width:215px;height:215px;right:2%;bottom:-165px; }
+  .page3-hero-copy { max-width:650px; }
+  .page3-eyebrow { display:block; margin-bottom:8px; color:rgba(255,255,255,.8); font-size:11px; font-weight:800; letter-spacing:1.15px; text-transform:uppercase; }
+  .page3-hero h1 { margin:0 0 10px; color:#fff; font-size:clamp(29px,4vw,40px); line-height:1.2; }
+  .page3-hero p { max-width:600px; margin:0; color:rgba(255,255,255,.9); line-height:1.7; }
+  .page3-hero-actions { display:flex; flex-wrap:wrap; gap:10px; position:relative; z-index:1; }
+  .page3-primary,.page3-secondary,.page3-join { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:44px; padding:0 17px; border:0; border-radius:999px; font:inherit; font-size:13px; font-weight:750; text-decoration:none; white-space:nowrap; cursor:pointer; transition:transform .16s ease,box-shadow .16s ease; }
+  .page3-primary { color:#705cbd; background:#fff; box-shadow:0 7px 18px rgba(47,45,114,.17); }
+  .page3-secondary { border:1px solid rgba(255,255,255,.48); color:#fff; background:rgba(255,255,255,.13); }
+  .page3-primary:hover,.page3-secondary:hover,.page3-join:hover { transform:translateY(-2px); box-shadow:0 10px 22px rgba(47,45,114,.22); }
+  .page3-filterbar { display:flex; gap:8px; overflow-x:auto; margin:24px 0 28px; padding:3px 2px 10px; scrollbar-width:thin; scrollbar-color:#d8d3f2 transparent; }
+  .page3-filter { display:inline-flex; flex:0 0 auto; align-items:center; gap:7px; min-height:39px; padding:0 14px; border:1px solid #e7e8f0; border-radius:999px; color:#59647b; background:#fff; box-shadow:0 3px 9px rgba(45,57,87,.045); font:inherit; font-size:13px; font-weight:650; text-decoration:none; transition:transform .16s ease,box-shadow .16s ease; }
+  .page3-filter::before { width:7px;height:7px;border-radius:50%;background:#8fcbe9;content:""; }
+  .page3-filter:nth-child(3n)::before { background:#e9a4c9; }
+  .page3-filter:nth-child(3n+1)::before { background:#a99be9; }
+  .page3-filter:hover { transform:translateY(-2px);box-shadow:0 7px 14px rgba(45,57,87,.09); }
+  .page3-filter.active { border-color:transparent;color:white;background:linear-gradient(105deg,#eb77b5,#9274df);box-shadow:0 5px 13px rgba(163,111,196,.22); }
+  .page3-filter.active::before { background:#fff; }
+  .page3-toolbar { display:flex; align-items:end; justify-content:space-between; gap:14px; margin:0 0 16px; }
+  .page3-toolbar h2 { margin:0; color:var(--p3-ink); font-size:23px; }
+  .page3-toolbar p { margin:4px 0 0; color:var(--p3-muted); font-size:13px; }
+  .page3-selection { margin-bottom:15px; padding:11px 14px; border:1px solid #e7dcfb; border-radius:13px; color:#675d9e; background:#f7f3ff; font-size:13px; }
+  .page3-selection a { margin-left:10px; color:#6e57c3; font-weight:700; }
+  .page3-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; align-items:stretch; }
+  .page3-card { display:flex; min-width:0; flex-direction:column; padding:19px; border:1px solid var(--p3-line); border-radius:20px; background:#fff; box-shadow:0 7px 20px rgba(45,57,87,.055); transition:transform .18s ease,box-shadow .18s ease; }
+  .page3-card:hover { transform:translateY(-3px);box-shadow:0 13px 26px rgba(45,57,87,.11); }
+  .page3-card:nth-child(4n+1) { --accent:#70bce4;--soft:#eff8ff; }
+  .page3-card:nth-child(4n+2) { --accent:#a27fe0;--soft:#f5f0ff; }
+  .page3-card:nth-child(4n+3) { --accent:#6bb9a1;--soft:#eef9f5; }
+  .page3-card:nth-child(4n) { --accent:#d7ad5c;--soft:#fff8e9; }
+  .page3-card-top { display:flex; align-items:center; gap:11px; margin-bottom:13px; }
+  .page3-avatar { display:grid; flex:0 0 45px; place-items:center; width:45px;height:45px;border-radius:14px;color:var(--accent);background:var(--soft);font-size:22px; }
+  .page3-group-info { min-width:0; flex:1; }
+  .page3-group-name { display:block; overflow:hidden; color:#35415a; font-weight:750; text-decoration:none; text-overflow:ellipsis; white-space:nowrap; }
+  .page3-group-name:hover { color:#8068c5; }
+  .page3-host-note { margin-top:3px;color:var(--p3-muted);font-size:11px; }
+  .page3-status { flex:0 0 auto; padding:5px 9px; border-radius:999px; color:#43866e;background:#eaf8f1;font-size:10px;font-weight:750; }
+  .page3-status.full { color:#a05270;background:#fff0f4; }
+  .page3-activity { margin:0 0 11px;color:#303951;font-size:17px;line-height:1.45; }
+  .page3-facts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin:0 0 13px; }
+  .page3-fact { min-width:0;padding:9px 10px;border-radius:11px;background:var(--soft); }
+  .page3-fact-label { display:block;margin-bottom:3px;color:#8790a3;font-size:10px;font-weight:700; }
+  .page3-fact-value { display:block;overflow-wrap:anywhere;color:#4e5a72;font-size:12px;font-weight:650;line-height:1.45; }
+  .page3-capacity { margin-top:auto;padding-top:12px;border-top:1px solid #f0eff5; }
+  .page3-capacity-top { display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;color:#778197;font-size:11px; }
+  .page3-capacity-top strong { color:#4f5b72;font-size:12px; }
+  .page3-progress { height:6px;overflow:hidden;border-radius:999px;background:#eeedf4; }
+  .page3-progress span { display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#72c5e7,#a17ee1,#e77fb7); }
+  .page3-card-actions { display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:13px; }
+  .page3-view { color:#6f61b4;font-size:12px;font-weight:700;text-decoration:none; }
+  .page3-view:hover { text-decoration:underline; }
+  .page3-join { min-height:37px;padding:0 14px;color:#fff;background:linear-gradient(105deg,#6bbbe4,#9878df 65%,#d77fbe);box-shadow:0 5px 12px rgba(126,112,207,.17);font-size:12px; }
+  .page3-join:disabled { opacity:.55;cursor:not-allowed;transform:none; }
+  .page3-form-panel,.page3-detail-panel,.page3-empty { margin:0 0 20px;padding:20px;border:1px solid #e8e6f1;border-radius:19px;background:#fff;box-shadow:0 7px 20px rgba(45,57,87,.05); }
+  .page3-form-panel h2,.page3-detail-panel h2 { margin:0 0 15px;color:var(--p3-ink);font-size:20px; }
+  .page3-form-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px; }
+  .page3-field { min-width:0; }
+  .page3-field.wide { grid-column:1/-1; }
+  .page3-field label { display:block;margin-bottom:5px;color:#626d83;font-size:12px;font-weight:700; }
+  .page3-field input,.page3-field select { width:100%;min-height:42px;padding:8px 11px;border:1px solid #dfe2eb;border-radius:11px;color:#3b4660;background:#fff;font:inherit;font-size:13px; }
+  .page3-form-actions { display:flex;gap:9px;margin-top:14px; }
+  .page3-submit { border:0;color:#fff;background:linear-gradient(105deg,#6bbbe4,#9878df 65%,#d77fbe);cursor:pointer; }
+  .page3-cancel { border:1px solid #e4e4ee;color:#68738b;background:#fff; }
+  .page3-empty { padding:30px 18px;color:var(--p3-muted);text-align:center; }
+  .page3-empty h3 { margin:0 0 5px;color:#3c4860; }
+  .page3-empty p { margin:0 0 12px;font-size:13px; }
+  .page3 a:focus-visible,.page3 button:focus-visible,.page3 input:focus-visible,.page3 select:focus-visible { outline:3px solid #edb6d6;outline-offset:3px; }
+  @media(max-width:700px) { .page3-hero { align-items:flex-start;flex-direction:column; }.page3-hero-actions { width:100%; }.page3-toolbar { align-items:flex-start;flex-direction:column; } }
+  @media(max-width:600px) { .page3-grid { grid-template-columns:minmax(0,1fr); }.page3-hero { padding:25px 20px;border-radius:22px; }.page3-form-grid { grid-template-columns:1fr; }.page3-field.wide { grid-column:auto; } }
+  @media(max-width:390px) { .page3-card { padding:15px; }.page3-card-actions { align-items:stretch;flex-direction:column; }.page3-join { width:100%; } }
 </style>
 {% endblock %}
 {% block content %}
 <div class="page3">
-  <section class="page3-hero" aria-labelledby="page3-title">
+  <section class="page3-hero" aria-labelledby="activity-groups-title">
     <div class="page3-hero-copy">
-      <h1 id="page3-title">&#xe2b;&#xe32;&#xe40;&#xe1e;&#xe37;&#xe48;&#xe2d;&#xe19;&#xe23;&#xe48;&#xe27;&#xe21;&#xe01;&#xe34;&#xe08;&#xe01;&#xe23;&#xe23;&#xe21; &#xe2b;&#xe23;&#xe37;&#xe2d;&#xe40;&#xe1b;&#xe34;&#xe14;&#xe2b;&#xe49;&#xe2d;&#xe07;&#xe0a;&#xe27;&#xe19;&#xe40;&#xe1e;&#xe37;&#xe48;&#xe2d;&#xe19; &#x1f91d;</h1>
-      <p>&#xe17;&#xe38;&#xe01;&#xe01;&#xe25;&#xe38;&#xe48;&#xe21;&#xe22;&#xe34;&#xe19;&#xe14;&#xe35;&#xe15;&#xe49;&#xe2d;&#xe19;&#xe23;&#xe31;&#xe1a;&#xe40;&#xe1e;&#xe37;&#xe48;&#xe2d;&#xe19;&#xe43;&#xe2b;&#xe21;&#xe48;&#xe40;&#xe2a;&#xe21;&#xe2d; &#xe44;&#xe21;&#xe48;&#xe15;&#xe49;&#xe2d;&#xe07;&#xe01;&#xe31;&#xe07;&#xe27;&#xe25;&#xe40;&#xe23;&#xe37;&#xe48;&#xe2d;&#xe07;&#xe17;&#xe31;&#xe01;&#xe29;&#xe30;&#xe2b;&#xe23;&#xe37;&#xe2d;&#xe2d;&#xe38;&#xe1b;&#xe01;&#xe23;&#xe13;&#xe4c; &#xe40;&#xe23;&#xe34;&#xe48;&#xe21;&#xe15;&#xe49;&#xe19;&#xe08;&#xe32;&#xe01;&#xe01;&#xe34;&#xe08;&#xe01;&#xe23;&#xe23;&#xe21;&#xe14;&#xe35; &#xe46;</p>
+      <span class="page3-eyebrow">Activity Groups</span>
+      <h1 id="activity-groups-title">Find your people. Make a plan.</h1>
+      <p>Browse existing student groups, check the details, and join one that fits your schedule.</p>
     </div>
-    <div class="page3-hero-action">
-      <button class="page3-create" type="button">+ &#xe2a;&#xe23;&#xe49;&#xe32;&#xe07;&#xe01;&#xe25;&#xe38;&#xe48;&#xe21;&#xe19;&#xe31;&#xe14;&#xe40;&#xe1e;&#xe37;&#xe48;&#xe2d;&#xe19;&#xe43;&#xe2b;&#xe21;&#xe48; &#x1f308;</button>
-    </div>
-  </section>
-
-  <section class="page3-category-wrap" aria-label="&#xe2b;&#xe21;&#xe27;&#xe14;&#xe2b;&#xe21;&#xe39;&#xe48;&#xe01;&#xe34;&#xe08;&#xe01;&#xe23;&#xe23;&#xe21;">
-    <div class="page3-categories">
-      <button class="page3-category page3-category-active" type="button" aria-pressed="true">&#xe17;&#xe31;&#xe49;&#xe07;&#xe2b;&#xe21;&#xe14; ({{ count }})</button>
-      <button class="page3-category" type="button">&#x1f3c3; &#xe27;&#xe34;&#xe48;&#xe07;</button>
-      <button class="page3-category" type="button">&#x1f33f; &#xe40;&#xe14;&#xe34;&#xe19;&#xe40;&#xe25;&#xe48;&#xe19;</button>
-      <button class="page3-category" type="button">&#x1f6b2; &#xe1b;&#xe31;&#xe48;&#xe19;&#xe08;&#xe31;&#xe01;&#xe23;&#xe22;&#xe32;&#xe19;</button>
-      <button class="page3-category" type="button">&#x26bd; &#xe1f;&#xe38;&#xe15;&#xe1a;&#xe2d;&#xe25; / &#xe1f;&#xe38;&#xe15;&#xe0b;&#xe2d;&#xe25;</button>
-      <button class="page3-category" type="button">&#x1f3f8; &#xe41;&#xe1a;&#xe14;&#xe21;&#xe34;&#xe19;&#xe15;&#xe31;&#xe19;</button>
-      <button class="page3-category" type="button">&#x1f3c0; &#xe1a;&#xe32;&#xe2a;&#xe40;&#xe01;&#xe15;&#xe1a;&#xe2d;&#xe25; 3x3</button>
-      <button class="page3-category" type="button">&#x1f3ae; &#xe1a;&#xe2d;&#xe23;&#xe4c;&#xe14;&#xe40;&#xe01;&#xe21; & &#xe40;&#xe01;&#xe21;</button>
-      <button class="page3-category" type="button">&#x2615; &#xe04;&#xe32;&#xe40;&#xe1f;&#xe48; & &#xe0a;&#xe34;&#xe25;&#xe25;&#xe4c;</button>
+    <div class="page3-hero-actions">
+      <a class="page3-primary" href="{{ url_for('page', name='page3', action='create') }}">+ Create New Activity Group</a>
+      <a class="page3-secondary" href="#activity-groups">Browse groups</a>
     </div>
   </section>
 
-  <section aria-labelledby="page3-activities-title">
-    <div class="page3-section-head">
-      <h2 id="page3-activities-title">&#xe01;&#xe34;&#xe08;&#xe01;&#xe23;&#xe23;&#xe21;&#xe17;&#xe35;&#xe48;&#xe01;&#xe33;&#xe25;&#xe31;&#xe07;&#xe0a;&#xe27;&#xe19;&#xe40;&#xe1e;&#xe37;&#xe48;&#xe2d;&#xe19;</h2>
-      <p>&#xe40;&#xe25;&#xe37;&#xe2d;&#xe01;&#xe01;&#xe25;&#xe38;&#xe48;&#xe21;&#xe17;&#xe35;&#xe48;&#xe43;&#xe0a;&#xe48; &#xe41;&#xe25;&#xe49;&#xe27;&#xe21;&#xe32;&#xe40;&#xe23;&#xe34;&#xe48;&#xe21;&#xe2a;&#xe19;&#xe38;&#xe01;&#xe44;&#xe1b;&#xe14;&#xe49;&#xe27;&#xe22;&#xe01;&#xe31;&#xe19;</p>
+  <nav class="page3-filterbar" aria-label="Filter activity groups">
+    <a class="page3-filter{% if not selected_activity %} active{% endif %}" href="{{ url_for('page', name='page3') }}">All groups ({{ total_group_count }})</a>
+    {% for category in activity_categories %}
+    <a class="page3-filter{% if selected_activity == category.name %} active{% endif %}" href="{{ url_for('page', name='page3', activity=category.name) }}">{{ category.name }} ({{ category.count }})</a>
+    {% endfor %}
+  </nav>
+
+  {% if show_create_form %}
+  <section class="page3-form-panel" aria-labelledby="create-group-title">
+    <h2 id="create-group-title">Create New Activity Group</h2>
+    <form method="post" action="{{ url_for('page', name='page3', action='create') }}">
+      <input type="hidden" name="action" value="create">
+      <div class="page3-form-grid">
+        <div class="page3-field">
+          <label for="group_name">Group name</label>
+          <input id="group_name" name="group_name" required maxlength="80" placeholder="Group name">
+        </div>
+        <div class="page3-field">
+          <label for="activity">Activity category</label>
+          <select id="activity" name="activity" required>
+            {% for category in activity_categories %}
+            <option value="{{ category.name }}"{% if selected_activity == category.name %} selected{% endif %}>{{ category.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="page3-field">
+          <label for="place">Meeting place</label>
+          <input id="place" name="place" required maxlength="160" placeholder="Meeting place">
+        </div>
+        <div class="page3-field">
+          <label for="date">Date</label>
+          <input id="date" name="date" type="date" required>
+        </div>
+        <div class="page3-field">
+          <label for="max_members">Group capacity</label>
+          <input id="max_members" name="max_members" type="number" min="2" max="50" value="6" required>
+        </div>
+      </div>
+      <div class="page3-form-actions">
+        <button class="page3-primary page3-submit" type="submit">Create group</button>
+        <a class="page3-primary page3-cancel" href="{{ url_for('page', name='page3', activity=selected_activity) if selected_activity else url_for('page', name='page3') }}">Cancel</a>
+      </div>
+    </form>
+  </section>
+  {% endif %}
+
+  {% if selected_group %}
+  <section class="page3-detail-panel" aria-labelledby="selected-group-title">
+    <h2 id="selected-group-title">{{ selected_group.group_name }}</h2>
+    <div>{{ selected_group.activity }} &#xb7; {{ selected_group.place }} &#xb7; {{ selected_group.date }}</div>
+    <a class="page3-view" href="{{ url_for('page', name='page3', activity=selected_activity) if selected_activity else url_for('page', name='page3') }}">Back to activity groups</a>
+  </section>
+  {% endif %}
+
+  <section id="activity-groups" aria-labelledby="groups-heading">
+    <div class="page3-toolbar">
+      <div>
+        <h2 id="groups-heading">Activity Groups</h2>
+        <p>{% if selected_activity %}Showing groups for {{ selected_activity }}{% if selected_place %} at {{ selected_place }}{% endif %}{% else %}All available groups{% endif %}</p>
+      </div>
+      <p>{{ group_count }} group{% if group_count != 1 %}s{% endif %}</p>
     </div>
-    <div class="page3-grid" id="page3-activity-list">
+
+    {% if activities %}
+    <div class="page3-grid">
       {% for activity in activities %}
       <article class="page3-card">
-        <div class="page3-host">
+        <div class="page3-card-top">
           <div class="page3-avatar" aria-hidden="true">{{ activity.icon }}</div>
-          <div class="page3-host-info">
-            <div class="page3-host-name">{{ activity.host }}</div>
-            <div class="page3-host-year">{{ activity.year }}</div>
+          <div class="page3-group-info">
+            <a class="page3-group-name" href="{{ url_for('page', name='page3', activity=activity.activity, place=activity.place, group_id=activity.id) }}">{{ activity.group_name }}</a>
+            <div class="page3-host-note">{{ activity.activity }}</div>
           </div>
-          <span class="page3-host-badge">Host</span>
+          <span class="page3-status{% if activity.is_full %} full{% endif %}">{% if activity.is_full %}Full{% else %}Open{% endif %}</span>
         </div>
-
-        <h3>{{ activity.title }}</h3>
-        <p class="page3-card-description">{{ activity.description }}</p>
-
-        <div class="page3-details">
-          <div class="page3-detail">
-            <span class="page3-detail-label">&#xe27;&#xe31;&#xe19;&#xe17;&#xe35;&#xe48;</span>
-            <span class="page3-detail-value">{{ activity.date }}</span>
-          </div>
-          <div class="page3-detail">
-            <span class="page3-detail-label">&#xe40;&#xe27;&#xe25;&#xe32;</span>
-            <span class="page3-detail-value">{{ activity.time }}</span>
-          </div>
-          <div class="page3-detail">
-            <span class="page3-detail-label">&#xe2a;&#xe16;&#xe32;&#xe19;&#xe17;&#xe35;&#xe48;</span>
-            <span class="page3-detail-value">{{ activity.location }}</span>
-          </div>
+        <h3 class="page3-activity">{{ activity.activity }}</h3>
+        <div class="page3-facts">
+          <div class="page3-fact"><span class="page3-fact-label">Date</span><span class="page3-fact-value">{{ activity.date }}</span></div>
+          <div class="page3-fact"><span class="page3-fact-label">Meeting place</span><span class="page3-fact-value">{{ activity.place }}</span></div>
+          <div class="page3-fact"><span class="page3-fact-label">Group</span><span class="page3-fact-value">{{ activity.group_name }}</span></div>
+          <div class="page3-fact"><span class="page3-fact-label">Available spaces</span><span class="page3-fact-value">{{ activity.remaining_spaces }}</span></div>
         </div>
-
-        <div class="page3-tags">
-          {% for tag in activity.tags %}<span class="page3-tag">{{ tag }}</span>{% endfor %}
+        <div class="page3-capacity">
+          <div class="page3-capacity-top"><span>Participants</span><strong>{{ activity.members }}/{{ activity.max_members }}</strong></div>
+          <div class="page3-progress" role="img" aria-label="{{ activity.members }} of {{ activity.max_members }} participants"><span style="width: {{ activity.progress }}%"></span></div>
         </div>
-
-        <div class="page3-card-bottom">
-          <div class="page3-capacity">
-            <div class="page3-capacity-line">
-              <span>&#xe08;&#xe33;&#xe19;&#xe27;&#xe19;&#xe2a;&#xe21;&#xe32;&#xe0a;&#xe34;&#xe01;</span>
-              <strong>{{ activity.capacity }}/{{ activity.limit }}</strong>
-            </div>
-            <div class="page3-progress" role="img" aria-label="&#xe21;&#xe35;&#xe2a;&#xe21;&#xe32;&#xe0a;&#xe34;&#xe01; {{ activity.capacity }} &#xe08;&#xe32;&#xe01; {{ activity.limit }} &#xe04;&#xe19;">
-              <span style="width: {{ activity.progress }}%"></span>
-            </div>
-          </div>
-          <button class="page3-join" type="button">&#xe40;&#xe02;&#xe49;&#xe32;&#xe23;&#xe48;&#xe27;&#xe21;&#xe01;&#xe25;&#xe38;&#xe48;&#xe21;&#xe40;&#xe25;&#xe22; &#x2728;</button>
+        <div class="page3-card-actions">
+          <a class="page3-view" href="{{ url_for('page', name='page3', activity=activity.activity, place=activity.place, group_id=activity.id) }}">View details &#x2192;</a>
+          <form method="post" action="{{ url_for('page', name='page3', activity=activity.activity, place=activity.place) }}">
+            <input type="hidden" name="action" value="join">
+            <input type="hidden" name="group_index" value="{{ activity.id }}">
+            <button class="page3-join" type="submit"{% if activity.is_full %} disabled{% endif %}>{% if activity.is_full %}Group full{% else %}Join Group{% endif %}</button>
+          </form>
         </div>
       </article>
       {% endfor %}
     </div>
+    {% else %}
+    <div class="page3-empty">
+      <h3>No activity groups found</h3>
+      <p>{% if selected_activity %}There are no matching groups for this selection.{% else %}There are no activity groups yet.{% endif %}</p>
+      <a class="page3-view" href="{{ url_for('page', name='page3') }}">Show all groups</a>
+    </div>
+    {% endif %}
   </section>
 </div>
 {% endblock %}
-
-
 
