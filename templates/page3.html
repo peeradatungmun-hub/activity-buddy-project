@@ -1,83 +1,158 @@
 {% extends "base.html" %}
-{# templates/page3.html — ★ your page 3. Replace with a page from catalog/ and adapt. #}
-
 {% block head %}
 <style>
-  .page3-user-row {
-    display: flex;
-    min-height: 36px;
-    justify-content: flex-end;
-    margin-bottom: 12px;
+  .page3 { --p3-ink: #303951; --p3-muted: #7b8497; --p3-line: #ececf4; color: var(--p3-ink); width: 100%; }
+  .page3 * { box-sizing: border-box; }
+  .page3-hero { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 32px; overflow: hidden; min-height: 245px; padding: clamp(28px, 5vw, 52px); border-radius: 28px; color: #fff; background: linear-gradient(112deg, #5dbce9 0%, #648fe5 46%, #9875df 100%); box-shadow: 0 16px 34px rgba(105, 112, 201, .2); }
+  .page3-hero::before, .page3-hero::after { position: absolute; z-index: 0; content: ""; border: 1px solid rgba(255,255,255,.18); border-radius: 50%; pointer-events: none; }
+  .page3-hero::before { width: 290px; height: 290px; right: 21%; top: -210px; }
+  .page3-hero::after { width: 230px; height: 230px; right: 5%; bottom: -180px; }
+  .page3-hero-copy, .page3-hero-action { position: relative; z-index: 1; }
+  .page3-hero-copy { max-width: 640px; }
+  .page3-hero h1 { margin: 0 0 12px; max-width: 650px; color: #fff; font-size: clamp(27px, 4vw, 39px); line-height: 1.35; letter-spacing: -.4px; }
+  .page3-hero p { max-width: 620px; margin: 0; color: rgba(255,255,255,.91); font-size: 15px; line-height: 1.8; }
+  .page3-create { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; padding: 0 21px; border: 1px solid rgba(255,255,255,.6); border-radius: 999px; color: #735fc2; background: #fff; box-shadow: 0 8px 20px rgba(55,55,130,.16); font: inherit; font-size: 14px; font-weight: 750; white-space: nowrap; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease; }
+  .page3-create:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(55,55,130,.25); }
+  .page3-category-wrap { margin: 26px 0 33px; }
+  .page3-categories { display: flex; gap: 9px; overflow-x: auto; padding: 3px 2px 11px; scrollbar-width: thin; scrollbar-color: #d7d2f4 transparent; }
+  .page3-category { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 0 15px; border: 1px solid #ecebf4; border-radius: 999px; color: #535d72; background: #fff; box-shadow: 0 3px 10px rgba(51,61,91,.045); font: inherit; font-size: 13px; font-weight: 650; white-space: nowrap; cursor: pointer; transition: transform .16s ease, box-shadow .16s ease; }
+  .page3-category:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(51,61,91,.1); }
+  .page3-category-active { border-color: transparent; color: #fff; background: linear-gradient(110deg, #ee79b5, #9674e4); box-shadow: 0 5px 14px rgba(176,112,200,.22); }
+  .page3-section-head { display: flex; align-items: end; justify-content: space-between; gap: 14px; margin-bottom: 17px; }
+  .page3-section-head h2 { margin: 0; color: var(--p3-ink); font-size: 23px; }
+  .page3-section-head p { margin: 0; color: var(--p3-muted); font-size: 13px; }
+  .page3-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 17px; align-items: stretch; }
+  .page3-card { display: flex; flex-direction: column; min-width: 0; padding: 19px; border: 1px solid var(--p3-line); border-radius: 21px; background: #fff; box-shadow: 0 7px 21px rgba(47,58,93,.06); transition: transform .2s ease, box-shadow .2s ease; }
+  .page3-card:hover { transform: translateY(-3px); box-shadow: 0 13px 28px rgba(47,58,93,.11); }
+  .page3-card:nth-child(4n+1) { --card-accent: #7bbfe8; --card-soft: #eef8ff; }
+  .page3-card:nth-child(4n+2) { --card-accent: #b483df; --card-soft: #f7f1ff; }
+  .page3-card:nth-child(4n+3) { --card-accent: #72bda9; --card-soft: #eef9f5; }
+  .page3-card:nth-child(4n) { --card-accent: #e4b965; --card-soft: #fff8e9; }
+  .page3-host { display: flex; align-items: center; gap: 11px; min-width: 0; margin-bottom: 15px; }
+  .page3-avatar { display: grid; flex: 0 0 46px; place-items: center; width: 46px; height: 46px; border: 1px solid rgba(100,115,160,.08); border-radius: 15px; color: var(--card-accent); background: var(--card-soft); font-size: 23px; }
+  .page3-host-info { min-width: 0; }
+  .page3-host-name { overflow: hidden; color: #303951; font-size: 14px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+  .page3-host-year { overflow: hidden; margin-top: 2px; color: var(--p3-muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+  .page3-host-badge { margin-left: auto; padding: 5px 10px; border: 1px solid #e4dcfb; border-radius: 999px; color: #7968bd; background: #f6f2ff; font-size: 11px; font-weight: 750; }
+  .page3-card h3 { margin: 0 0 11px; color: #303951; font-size: 17px; line-height: 1.5; }
+  .page3-card-description { margin: 0 0 14px; padding: 11px 13px; border: 1px solid #f0eef7; border-radius: 13px; color: #606b80; background: #faf9fd; font-size: 13px; line-height: 1.65; }
+  .page3-details { display: grid; grid-template-columns: minmax(0, .75fr) minmax(0, .75fr) minmax(0, 1.5fr); gap: 8px; margin-bottom: 13px; }
+  .page3-detail { min-width: 0; padding: 9px 10px; border-radius: 12px; background: var(--card-soft); }
+  .page3-detail-label { display: block; margin-bottom: 3px; color: #858da0; font-size: 10px; font-weight: 700; }
+  .page3-detail-value { display: block; overflow-wrap: anywhere; color: #46516a; font-size: 12px; font-weight: 650; line-height: 1.45; }
+  .page3-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .page3-tag { display: inline-block; max-width: 100%; overflow-wrap: anywhere; padding: 5px 9px; border: 1px solid #e9e7f3; border-radius: 999px; color: #79708f; background: #fbfaff; font-size: 10px; line-height: 1.35; }
+  .page3-card-bottom { display: flex; align-items: center; gap: 14px; margin-top: auto; padding-top: 13px; border-top: 1px solid #f0eff5; }
+  .page3-capacity { flex: 1; min-width: 0; }
+  .page3-capacity-line { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 6px; color: #68738a; font-size: 11px; }
+  .page3-capacity-line strong { color: #505c73; font-size: 12px; }
+  .page3-progress { height: 6px; overflow: hidden; border-radius: 999px; background: #eeedf4; }
+  .page3-progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #72c6e8, #aa83e5, #e887b8); }
+  .page3-join { flex: 0 0 auto; min-height: 39px; padding: 0 15px; border: 0; border-radius: 999px; color: #fff; background: linear-gradient(105deg, #6bbbe4, #9b78e0 65%, #d77fbe); box-shadow: 0 5px 13px rgba(126,112,207,.19); font: inherit; font-size: 12px; font-weight: 750; white-space: nowrap; cursor: pointer; transition: transform .17s ease, box-shadow .17s ease; }
+  .page3-join:hover { transform: translateY(-2px); box-shadow: 0 8px 17px rgba(126,112,207,.28); }
+  .page3 button:focus-visible { outline: 3px solid #efb8d6; outline-offset: 3px; }
+  @media (max-width: 760px) {
+    .page3-hero { align-items: flex-start; flex-direction: column; gap: 20px; }
+    .page3-hero-copy { max-width: 100%; }
+    .page3-section-head { align-items: flex-start; flex-direction: column; gap: 5px; }
   }
-
-  .page3-user-badge {
-    display: inline-flex;
-    max-width: 100%;
-    align-items: center;
-    gap: 9px;
-    padding: 6px 8px 6px 12px;
-    border: 1px solid #e3d4ef;
-    border-radius: 999px;
-    color: #5e3977;
-    background: #fff;
-    box-shadow: 0 7px 18px rgba(74, 47, 91, .08);
-    font-size: .86rem;
+  @media (max-width: 620px) {
+    .page3-grid { grid-template-columns: minmax(0, 1fr); }
   }
-
-  .page3-user-badge[hidden] {
-    display: none;
-  }
-
-  .page3-user-name {
-    overflow-wrap: anywhere;
-    font-weight: 700;
-  }
-
-  .page3-user-logout {
-    padding: 5px 10px;
-    border: 1px solid #eadcf3;
-    border-radius: 999px;
-    color: #7a2db0;
-    background: #faf4ff;
-    font: inherit;
-    font-size: .78rem;
-    font-weight: 700;
-    cursor: pointer;
+  @media (max-width: 440px) {
+    .page3-hero { padding: 25px 20px; border-radius: 22px; }
+    .page3-hero h1 { font-size: 27px; }
+    .page3-card { padding: 15px; }
+    .page3-details { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .page3-detail:last-child { grid-column: 1 / -1; }
+    .page3-card-bottom { align-items: stretch; flex-direction: column; gap: 11px; }
+    .page3-join { width: 100%; min-height: 43px; }
   }
 </style>
 {% endblock %}
-
 {% block content %}
-<div class="page3-user-row">
-  <div class="page3-user-badge" id="page-user-badge" hidden>
-    <span>👤 <span class="page3-user-name" id="page-user-name"></span></span>
-    <button class="page3-user-logout" id="page-user-logout" type="button">ออกจากระบบ</button>
-  </div>
+<div class="page3">
+  <section class="page3-hero" aria-labelledby="page3-title">
+    <div class="page3-hero-copy">
+      <h1 id="page3-title">&#xe2b;&#xe32;&#xe40;&#xe1e;&#xe37;&#xe48;&#xe2d;&#xe19;&#xe23;&#xe48;&#xe27;&#xe21;&#xe01;&#xe34;&#xe08;&#xe01;&#xe23;&#xe23;&#xe21; &#xe2b;&#xe23;&#xe37;&#xe2d;&#xe40;&#xe1b;&#xe34;&#xe14;&#xe2b;&#xe49;&#xe2d;&#xe07;&#xe0a;&#xe27;&#xe19;&#xe40;&#xe1e;&#xe37;&#xe48;&#xe2d;&#xe19; &#x1f91d;</h1>
+      <p>&#xe17;&#xe38;&#xe01;&#xe01;&#xe25;&#xe38;&#xe48;&#xe21;&#xe22;&#xe34;&#xe19;&#xe14;&#xe35;&#xe15;&#xe49;&#xe2d;&#xe19;&#xe23;&#xe31;&#xe1a;&#xe40;&#xe1e;&#xe37;&#xe48;&#xe2d;&#xe19;&#xe43;&#xe2b;&#xe21;&#xe48;&#xe40;&#xe2a;&#xe21;&#xe2d; &#xe44;&#xe21;&#xe48;&#xe15;&#xe49;&#xe2d;&#xe07;&#xe01;&#xe31;&#xe07;&#xe27;&#xe25;&#xe40;&#xe23;&#xe37;&#xe48;&#xe2d;&#xe07;&#xe17;&#xe31;&#xe01;&#xe29;&#xe30;&#xe2b;&#xe23;&#xe37;&#xe2d;&#xe2d;&#xe38;&#xe1b;&#xe01;&#xe23;&#xe13;&#xe4c; &#xe40;&#xe23;&#xe34;&#xe48;&#xe21;&#xe15;&#xe49;&#xe19;&#xe08;&#xe32;&#xe01;&#xe01;&#xe34;&#xe08;&#xe01;&#xe23;&#xe23;&#xe21;&#xe14;&#xe35; &#xe46;</p>
+    </div>
+    <div class="page3-hero-action">
+      <button class="page3-create" type="button">+ &#xe2a;&#xe23;&#xe49;&#xe32;&#xe07;&#xe01;&#xe25;&#xe38;&#xe48;&#xe21;&#xe19;&#xe31;&#xe14;&#xe40;&#xe1e;&#xe37;&#xe48;&#xe2d;&#xe19;&#xe43;&#xe2b;&#xe21;&#xe48; &#x1f308;</button>
+    </div>
+  </section>
+
+  <section class="page3-category-wrap" aria-label="&#xe2b;&#xe21;&#xe27;&#xe14;&#xe2b;&#xe21;&#xe39;&#xe48;&#xe01;&#xe34;&#xe08;&#xe01;&#xe23;&#xe23;&#xe21;">
+    <div class="page3-categories">
+      <button class="page3-category page3-category-active" type="button" aria-pressed="true">&#xe17;&#xe31;&#xe49;&#xe07;&#xe2b;&#xe21;&#xe14; ({{ count }})</button>
+      <button class="page3-category" type="button">&#x1f3c3; &#xe27;&#xe34;&#xe48;&#xe07;</button>
+      <button class="page3-category" type="button">&#x1f33f; &#xe40;&#xe14;&#xe34;&#xe19;&#xe40;&#xe25;&#xe48;&#xe19;</button>
+      <button class="page3-category" type="button">&#x1f6b2; &#xe1b;&#xe31;&#xe48;&#xe19;&#xe08;&#xe31;&#xe01;&#xe23;&#xe22;&#xe32;&#xe19;</button>
+      <button class="page3-category" type="button">&#x26bd; &#xe1f;&#xe38;&#xe15;&#xe1a;&#xe2d;&#xe25; / &#xe1f;&#xe38;&#xe15;&#xe0b;&#xe2d;&#xe25;</button>
+      <button class="page3-category" type="button">&#x1f3f8; &#xe41;&#xe1a;&#xe14;&#xe21;&#xe34;&#xe19;&#xe15;&#xe31;&#xe19;</button>
+      <button class="page3-category" type="button">&#x1f3c0; &#xe1a;&#xe32;&#xe2a;&#xe40;&#xe01;&#xe15;&#xe1a;&#xe2d;&#xe25; 3x3</button>
+      <button class="page3-category" type="button">&#x1f3ae; &#xe1a;&#xe2d;&#xe23;&#xe4c;&#xe14;&#xe40;&#xe01;&#xe21; & &#xe40;&#xe01;&#xe21;</button>
+      <button class="page3-category" type="button">&#x2615; &#xe04;&#xe32;&#xe40;&#xe1f;&#xe48; & &#xe0a;&#xe34;&#xe25;&#xe25;&#xe4c;</button>
+    </div>
+  </section>
+
+  <section aria-labelledby="page3-activities-title">
+    <div class="page3-section-head">
+      <h2 id="page3-activities-title">&#xe01;&#xe34;&#xe08;&#xe01;&#xe23;&#xe23;&#xe21;&#xe17;&#xe35;&#xe48;&#xe01;&#xe33;&#xe25;&#xe31;&#xe07;&#xe0a;&#xe27;&#xe19;&#xe40;&#xe1e;&#xe37;&#xe48;&#xe2d;&#xe19;</h2>
+      <p>&#xe40;&#xe25;&#xe37;&#xe2d;&#xe01;&#xe01;&#xe25;&#xe38;&#xe48;&#xe21;&#xe17;&#xe35;&#xe48;&#xe43;&#xe0a;&#xe48; &#xe41;&#xe25;&#xe49;&#xe27;&#xe21;&#xe32;&#xe40;&#xe23;&#xe34;&#xe48;&#xe21;&#xe2a;&#xe19;&#xe38;&#xe01;&#xe44;&#xe1b;&#xe14;&#xe49;&#xe27;&#xe22;&#xe01;&#xe31;&#xe19;</p>
+    </div>
+    <div class="page3-grid" id="page3-activity-list">
+      {% for activity in activities %}
+      <article class="page3-card">
+        <div class="page3-host">
+          <div class="page3-avatar" aria-hidden="true">{{ activity.icon }}</div>
+          <div class="page3-host-info">
+            <div class="page3-host-name">{{ activity.host }}</div>
+            <div class="page3-host-year">{{ activity.year }}</div>
+          </div>
+          <span class="page3-host-badge">Host</span>
+        </div>
+
+        <h3>{{ activity.title }}</h3>
+        <p class="page3-card-description">{{ activity.description }}</p>
+
+        <div class="page3-details">
+          <div class="page3-detail">
+            <span class="page3-detail-label">&#xe27;&#xe31;&#xe19;&#xe17;&#xe35;&#xe48;</span>
+            <span class="page3-detail-value">{{ activity.date }}</span>
+          </div>
+          <div class="page3-detail">
+            <span class="page3-detail-label">&#xe40;&#xe27;&#xe25;&#xe32;</span>
+            <span class="page3-detail-value">{{ activity.time }}</span>
+          </div>
+          <div class="page3-detail">
+            <span class="page3-detail-label">&#xe2a;&#xe16;&#xe32;&#xe19;&#xe17;&#xe35;&#xe48;</span>
+            <span class="page3-detail-value">{{ activity.location }}</span>
+          </div>
+        </div>
+
+        <div class="page3-tags">
+          {% for tag in activity.tags %}<span class="page3-tag">{{ tag }}</span>{% endfor %}
+        </div>
+
+        <div class="page3-card-bottom">
+          <div class="page3-capacity">
+            <div class="page3-capacity-line">
+              <span>&#xe08;&#xe33;&#xe19;&#xe27;&#xe19;&#xe2a;&#xe21;&#xe32;&#xe0a;&#xe34;&#xe01;</span>
+              <strong>{{ activity.capacity }}/{{ activity.limit }}</strong>
+            </div>
+            <div class="page3-progress" role="img" aria-label="&#xe21;&#xe35;&#xe2a;&#xe21;&#xe32;&#xe0a;&#xe34;&#xe01; {{ activity.capacity }} &#xe08;&#xe32;&#xe01; {{ activity.limit }} &#xe04;&#xe19;">
+              <span style="width: {{ activity.progress }}%"></span>
+            </div>
+          </div>
+          <button class="page3-join" type="button">&#xe40;&#xe02;&#xe49;&#xe32;&#xe23;&#xe48;&#xe27;&#xe21;&#xe01;&#xe25;&#xe38;&#xe48;&#xe21;&#xe40;&#xe25;&#xe22; &#x2728;</button>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
 </div>
-<h1>{{ title }}</h1>
-<p>TODO: page 3 content</p>
 {% endblock %}
 
-{% block scripts %}
-<script>
-  (function () {
-    const storageKey = "display_name";
-    const userBadge = document.getElementById("page-user-badge");
-    const userName = document.getElementById("page-user-name");
-    const logoutButton = document.getElementById("page-user-logout");
 
-    // Read the nickname saved by the Home page.
-    const displayName = sessionStorage.getItem(storageKey) || "";
-    if (displayName !== "") {
-      userName.textContent = displayName;
-      userBadge.hidden = false;
-    }
 
-    // Remove the nickname, then return to the Home page.
-    logoutButton.addEventListener("click", function () {
-      sessionStorage.removeItem(storageKey);
-      window.location.href = "/";
-    });
-  }());
-</script>
-{% endblock %}
