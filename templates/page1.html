@@ -77,8 +77,20 @@
     }
 
     .page-user-name {
+        display: block;
         overflow-wrap: anywhere;
         font-weight: 700;
+    }
+
+    .page-user-copy {
+        min-width: 0;
+        line-height: 1.25;
+    }
+
+    .page-user-username {
+        display: block;
+        color: #8b7898;
+        font-size: .72rem;
     }
 
     .page-user-logout {
@@ -432,9 +444,13 @@
 {% block content %}
 <div class="page1-container">
     <div class="page-user-row">
-        <div class="page-user-badge" id="page-user-badge" hidden>
-            <span>👤 <span class="page-user-name" id="page-user-name"></span></span>
-            <button class="page-user-logout" id="page-user-logout" type="button">ออกจากระบบ</button>
+        <div class="page-user-badge" data-demo-auth-profile hidden>
+            <span aria-hidden="true">👤</span>
+            <span class="page-user-copy">
+                <strong class="page-user-name" data-demo-auth-display-name></strong>
+                <small class="page-user-username">@<span data-demo-auth-username></span></small>
+            </span>
+            <button class="page-user-logout" type="button" data-demo-auth-logout>ออกจากระบบ</button>
         </div>
     </div>
 
@@ -488,25 +504,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
-  (function () {
-    const storageKey = "display_name";
-    const userBadge = document.getElementById("page-user-badge");
-    const userName = document.getElementById("page-user-name");
-    const logoutButton = document.getElementById("page-user-logout");
-
-    // Read the nickname saved by the Home page.
-    const displayName = sessionStorage.getItem(storageKey) || "";
-    if (displayName !== "") {
-      userName.textContent = displayName;
-      userBadge.hidden = false;
-    }
-
-    // Remove the nickname, then return to the Home page.
-    logoutButton.addEventListener("click", function () {
-      sessionStorage.removeItem(storageKey);
-      window.location.href = "/";
-    });
-  }());
-</script>
+<script src="{{ url_for('static', filename='js/demo-auth.js') }}"></script>
 {% endblock %}

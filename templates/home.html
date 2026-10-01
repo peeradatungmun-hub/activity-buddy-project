@@ -124,80 +124,7 @@
     backdrop-filter: blur(8px);
   }
 
-  .home-login-label {
-    display: block;
-    margin: 0 0 8px;
-    color: #625b70;
-    font-size: .86rem;
-    font-weight: 700;
-  }
-
-  .home-login-form {
-    display: flex;
-    align-items: flex-end;
-    gap: 9px;
-  }
-
-  .home-login-field {
-    min-width: 0;
-    flex: 1;
-  }
-
-  .home-login-form[hidden],
-  .home-user-state[hidden] {
-    display: none;
-  }
-
-  .home-login-input {
-    min-width: 0;
-    flex: 1;
-    padding: 11px 14px;
-    border: 1px solid #ddd5e3;
-    border-radius: 13px;
-    color: var(--home-ink);
-    background: #fff;
-    font: inherit;
-    font-size: .95rem;
-    outline: none;
-    transition: border-color .2s, box-shadow .2s;
-  }
-
-  .home-login-input:focus {
-    border-color: #c69bea;
-    box-shadow: 0 0 0 3px rgba(139, 36, 245, .1);
-  }
-
-  .home-login-button,
-  .home-logout-button {
-    flex: 0 0 auto;
-    padding: 10px 16px;
-    border-radius: 13px;
-    font: inherit;
-    font-size: .92rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform .2s, box-shadow .2s;
-  }
-
-  .home-login-button {
-    border: 0;
-    color: #fff;
-    background: linear-gradient(100deg, #8b24f5, #d826d5);
-    box-shadow: 0 7px 16px rgba(139, 36, 245, .18);
-  }
-
-  .home-logout-button {
-    border: 1px solid #e4d7ea;
-    color: #6a328f;
-    background: #fff;
-  }
-
-  .home-login-button:hover,
-  .home-logout-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 9px 19px rgba(91, 53, 111, .15);
-  }
-
+  .home-account-intro,
   .home-user-state {
     display: flex;
     align-items: center;
@@ -205,23 +132,180 @@
     gap: 12px;
   }
 
-  .home-greeting {
+  .home-account-copy,
+  .home-profile-copy {
     min-width: 0;
-    margin: 0;
-    color: #4c3d57;
-    font-size: 1rem;
-    overflow-wrap: anywhere;
   }
 
-  .home-greeting strong {
-    color: #7a25bb;
-  }
-
-  .home-login-note {
+  .home-account-copy strong,
+  .home-profile-copy strong,
+  .home-profile-copy small {
     display: block;
-    margin-top: 8px;
+  }
+
+  .home-account-copy strong,
+  .home-profile-copy strong {
+    color: #553565;
+    font-size: .95rem;
+  }
+
+  .home-account-copy span,
+  .home-profile-copy small {
     color: #898292;
     font-size: .78rem;
+  }
+
+  .home-login-button,
+  .home-logout-button,
+  .demo-auth-submit,
+  .demo-auth-switch {
+    border-radius: 13px;
+    font: inherit;
+    font-size: .9rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .home-login-button,
+  .demo-auth-submit {
+    padding: 10px 16px;
+    border: 0;
+    color: #fff;
+    background: linear-gradient(100deg, #8b24f5, #d826d5);
+    box-shadow: 0 7px 16px rgba(139, 36, 245, .18);
+  }
+
+  .home-logout-button {
+    padding: 7px 12px;
+    border: 1px solid #e4d7ea;
+    color: #6a328f;
+    background: #fff;
+  }
+
+  .home-greeting {
+    margin: 9px 0 0;
+    color: #6d5978;
+    font-size: .88rem;
+  }
+
+  .demo-auth-modal {
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    display: grid;
+    padding: 20px;
+    place-items: center;
+    background: rgba(30, 23, 39, .42);
+    backdrop-filter: blur(6px);
+  }
+
+  .demo-auth-modal[hidden],
+  .demo-auth-view[hidden],
+  .home-user-state[hidden],
+  .home-account-intro[hidden],
+  .home-greeting[hidden],
+  .demo-auth-error[hidden] {
+    display: none;
+  }
+
+  .demo-auth-card {
+    position: relative;
+    width: min(430px, 100%);
+    max-height: calc(100vh - 40px);
+    padding: 28px;
+    overflow-y: auto;
+    border: 1px solid #ebdff2;
+    border-radius: 26px;
+    background: #fffdfd;
+    box-shadow: 0 28px 70px rgba(48, 31, 61, .25);
+  }
+
+  .demo-auth-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border: 1px solid #eadfed;
+    border-radius: 50%;
+    color: #76697d;
+    background: #fff;
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+
+  .demo-auth-view h2 {
+    margin: 0 40px 6px 0;
+    color: #33283d;
+    font-size: 1.55rem;
+  }
+
+  .demo-auth-description,
+  .demo-auth-warning {
+    color: #817689;
+    font-size: .84rem;
+  }
+
+  .demo-auth-warning {
+    padding: 9px 11px;
+    border-radius: 11px;
+    background: #fff5df;
+  }
+
+  .demo-auth-form {
+    display: grid;
+    gap: 13px;
+    margin-top: 18px;
+  }
+
+  .demo-auth-field label {
+    display: block;
+    margin-bottom: 5px;
+    color: #625b70;
+    font-size: .82rem;
+    font-weight: 700;
+  }
+
+  .demo-auth-field input {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1px solid #ddd5e3;
+    border-radius: 12px;
+    color: var(--home-ink);
+    background: #fff;
+    font: inherit;
+    font-size: .93rem;
+    outline: none;
+  }
+
+  .demo-auth-field input:focus {
+    border-color: #c69bea;
+    box-shadow: 0 0 0 3px rgba(139, 36, 245, .1);
+  }
+
+  .demo-auth-error {
+    margin: 0;
+    padding: 8px 10px;
+    border-radius: 10px;
+    color: #a13d60;
+    background: #fff0f4;
+    font-size: .82rem;
+  }
+
+  .demo-auth-switch-row {
+    margin: 16px 0 0;
+    color: #817689;
+    text-align: center;
+    font-size: .84rem;
+  }
+
+  .demo-auth-switch {
+    padding: 3px 7px;
+    border: 0;
+    color: #7a2db0;
+    background: transparent;
   }
 
   .home-cta {
@@ -674,7 +758,7 @@
       width: 100%;
     }
 
-    .home-login-form,
+    .home-account-intro,
     .home-user-state {
       align-items: stretch;
       flex-direction: column;
@@ -752,28 +836,22 @@
       </div>
 
       <div class="home-login-panel">
-        <form class="home-login-form" id="home-login-form">
-          <div class="home-login-field">
-            <label class="home-login-label" for="home-display-name">เข้าสู่ระบบด้วยชื่อเล่น</label>
-            <input
-              class="home-login-input"
-              id="home-display-name"
-              name="display_name"
-              type="text"
-              maxlength="40"
-              autocomplete="nickname"
-              placeholder="ชื่อหรือชื่อเล่น"
-              required
-            >
+        <div class="home-account-intro" data-demo-auth-logged-out>
+          <div class="home-account-copy">
+            <strong>บัญชีเดโม Activity Buddy</strong>
+            <span>เข้าสู่ระบบหรือสมัครใช้งานสำหรับการสาธิต</span>
           </div>
-          <button class="home-login-button" type="submit">เข้าสู่ระบบ</button>
-        </form>
-
-        <div class="home-user-state" id="home-user-state" aria-live="polite" hidden>
-          <p class="home-greeting">สวัสดี, <strong id="home-greeting-name"></strong> 👋</p>
-          <button class="home-logout-button" id="home-logout-button" type="button">ออกจากระบบ</button>
+          <button class="home-login-button" type="button" data-demo-auth-open>เข้าสู่ระบบ</button>
         </div>
-        <small class="home-login-note">จดจำเฉพาะชื่อเล่นในแท็บนี้ และไม่ใช้รหัสผ่าน</small>
+
+        <div class="home-user-state" data-demo-auth-profile hidden>
+          <div class="home-profile-copy">
+            <strong>👤 <span data-demo-auth-display-name></span></strong>
+            <small>@<span data-demo-auth-username></span></small>
+          </div>
+          <button class="home-logout-button" type="button" data-demo-auth-logout>ออกจากระบบ</button>
+        </div>
+        <p class="home-greeting" data-demo-auth-greeting hidden></p>
       </div>
     </div>
 
@@ -869,61 +947,58 @@
     </div>
   </section>
 </div>
+
+<div class="demo-auth-modal" data-demo-auth-modal hidden>
+  <div class="demo-auth-card" role="dialog" aria-modal="true" aria-label="บัญชีเดโม Activity Buddy">
+    <button class="demo-auth-close" type="button" aria-label="ปิด" data-demo-auth-close>×</button>
+
+    <section class="demo-auth-view" data-demo-auth-login-view>
+      <h2>เข้าสู่ระบบ</h2>
+      <p class="demo-auth-description">ใช้บัญชีเดโมที่สมัครไว้ในเบราว์เซอร์นี้</p>
+      <form class="demo-auth-form" data-demo-auth-login-form>
+        <div class="demo-auth-field">
+          <label for="demo-login-username">ชื่อผู้ใช้</label>
+          <input id="demo-login-username" type="text" autocomplete="username" required>
+        </div>
+        <div class="demo-auth-field">
+          <label for="demo-login-password">รหัสผ่าน</label>
+          <input id="demo-login-password" type="password" autocomplete="current-password" required>
+        </div>
+        <p class="demo-auth-error" data-demo-auth-login-error hidden></p>
+        <button class="demo-auth-submit" type="submit">เข้าสู่ระบบ</button>
+      </form>
+      <p class="demo-auth-switch-row">ยังไม่มีบัญชี? <button class="demo-auth-switch" type="button" data-demo-auth-show-register>สมัครใช้งาน</button></p>
+    </section>
+
+    <section class="demo-auth-view" data-demo-auth-register-view hidden>
+      <h2>สมัครใช้งาน</h2>
+      <p class="demo-auth-warning">บัญชีนี้ใช้เพื่อสาธิตเท่านั้น กรุณาอย่าใช้รหัสผ่านจริง</p>
+      <form class="demo-auth-form" data-demo-auth-register-form>
+        <div class="demo-auth-field">
+          <label for="demo-register-display-name">ชื่อที่แสดง</label>
+          <input id="demo-register-display-name" type="text" autocomplete="nickname" required>
+        </div>
+        <div class="demo-auth-field">
+          <label for="demo-register-username">ชื่อผู้ใช้</label>
+          <input id="demo-register-username" type="text" autocomplete="username" required>
+        </div>
+        <div class="demo-auth-field">
+          <label for="demo-register-password">รหัสผ่าน</label>
+          <input id="demo-register-password" type="password" autocomplete="new-password" minlength="4" required>
+        </div>
+        <div class="demo-auth-field">
+          <label for="demo-register-confirmation">ยืนยันรหัสผ่าน</label>
+          <input id="demo-register-confirmation" type="password" autocomplete="new-password" minlength="4" required>
+        </div>
+        <p class="demo-auth-error" data-demo-auth-register-error hidden></p>
+        <button class="demo-auth-submit" type="submit">สมัครใช้งาน</button>
+      </form>
+      <p class="demo-auth-switch-row">มีบัญชีแล้ว? <button class="demo-auth-switch" type="button" data-demo-auth-show-login>เข้าสู่ระบบ</button></p>
+    </section>
+  </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
-<script>
-  (function () {
-    const storageKey = "display_name";
-    const loginForm = document.getElementById("home-login-form");
-    const nameInput = document.getElementById("home-display-name");
-    const userState = document.getElementById("home-user-state");
-    const greetingName = document.getElementById("home-greeting-name");
-    const logoutButton = document.getElementById("home-logout-button");
-
-    function showUser(name) {
-      const isLoggedIn = name !== "";
-      loginForm.hidden = isLoggedIn;
-      userState.hidden = !isLoggedIn;
-      greetingName.textContent = name;
-    }
-
-    // Read the saved nickname when the Home page opens.
-    let rememberedName = "";
-    try {
-      rememberedName = sessionStorage.getItem(storageKey) || "";
-    } catch (error) {
-      rememberedName = "";
-    }
-    showUser(rememberedName);
-
-    // Save a non-empty nickname and switch to the greeting.
-    loginForm.addEventListener("submit", function (event) {
-      event.preventDefault();
-      const displayName = nameInput.value.trim();
-      if (displayName === "") {
-        return;
-      }
-
-      try {
-        sessionStorage.setItem(storageKey, displayName);
-      } catch (error) {
-        // The greeting still works even if browser storage is unavailable.
-      }
-      showUser(displayName);
-      nameInput.value = "";
-    });
-
-    // Remove only the nickname and show the login form again.
-    logoutButton.addEventListener("click", function () {
-      try {
-        sessionStorage.removeItem(storageKey);
-      } catch (error) {
-        // There is nothing else to clear when storage is unavailable.
-      }
-      showUser("");
-      nameInput.focus();
-    });
-  }());
-</script>
+<script src="{{ url_for('static', filename='js/demo-auth.js') }}"></script>
 {% endblock %}

@@ -3,6 +3,13 @@
 <style>
   .page3 { --p3-ink: #303951; --p3-muted: #758198; --p3-line: #e9eaf2; color: var(--p3-ink); }
   .page3 * { box-sizing: border-box; }
+  .page3-user-row { display:flex;min-height:36px;justify-content:flex-end;margin-bottom:12px; }
+  .page3-user-badge { display:inline-flex;max-width:100%;align-items:center;gap:9px;padding:6px 8px 6px 12px;border:1px solid #e3d4ef;border-radius:999px;color:#5e3977;background:#fff;box-shadow:0 7px 18px rgba(74,47,91,.08);font-size:.86rem; }
+  .page3-user-badge[hidden] { display:none; }
+  .page3-user-copy { min-width:0;line-height:1.25; }
+  .page3-user-name { display:block;overflow-wrap:anywhere;font-weight:700; }
+  .page3-user-username { display:block;color:#8b7898;font-size:.72rem; }
+  .page3-user-logout { padding:5px 10px;border:1px solid #eadcf3;border-radius:999px;color:#7a2db0;background:#faf4ff;font:inherit;font-size:.78rem;font-weight:700;cursor:pointer; }
   .page3-hero { position: relative; isolation: isolate; display: flex; align-items: center; justify-content: space-between; gap: 28px; overflow: hidden; min-height: 230px; padding: clamp(28px, 5vw, 48px); border-radius: 27px; color: #fff; background: linear-gradient(112deg,#58bce9 0%,#608fe5 47%,#9674dd 100%); box-shadow: 0 15px 34px rgba(102,111,196,.19); }
   .page3-hero::before,.page3-hero::after { position:absolute; z-index:-1; content:""; border:1px solid rgba(255,255,255,.2); border-radius:50%; }
   .page3-hero::before { width:270px;height:270px;right:24%;top:-205px; }
@@ -43,6 +50,8 @@
   .page3-group-name:hover { color:#8068c5; }
   .page3-host-note { margin-top:3px;color:var(--p3-muted);font-size:11px; }
   .page3-status { flex:0 0 auto; padding:5px 9px; border-radius:999px; color:#43866e;background:#eaf8f1;font-size:10px;font-weight:750; }
+  .page3-status.open { color:#43866e;background:#eaf8f1; }
+  .page3-status.near-full { color:#9a651c;background:#fff4d8; }
   .page3-status.full { color:#a05270;background:#fff0f4; }
   .page3-activity { margin:0 0 11px;color:#303951;font-size:17px;line-height:1.45; }
   .page3-facts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin:0 0 13px; }
@@ -59,6 +68,37 @@
   .page3-view:hover { text-decoration:underline; }
   .page3-join { min-height:37px;padding:0 14px;color:#fff;background:linear-gradient(105deg,#6bbbe4,#9878df 65%,#d77fbe);box-shadow:0 5px 12px rgba(126,112,207,.17);font-size:12px; }
   .page3-join:disabled { opacity:.55;cursor:not-allowed;transform:none; }
+  .page3-join.is-joined { opacity:1;color:#34745e;background:#e7f7ef;box-shadow:none; }
+  .page3-join.is-conflict { opacity:1;color:#9a531f;background:#fff0dc;box-shadow:none; }
+  .page3-join.is-full { color:#a05270;background:#fff0f4;box-shadow:none; }
+  .page3-join-notice { margin:0 0 16px;padding:12px 15px;border:1px solid #f1c59d;border-radius:14px;color:#8b4d24;background:#fff7eb;font-size:13px;font-weight:650;line-height:1.55; }
+  .page3-join-notice[hidden] { display:none; }
+  .page3-owner-actions { display:flex;gap:7px;flex-wrap:wrap;margin-top:10px; }
+  .page3-owner-actions[hidden],.page3-edit-form[hidden],.page3-my-card[hidden],.page3-my-state[hidden],.page3-delete-modal[hidden] { display:none; }
+  .page3-manage-button { min-height:34px;padding:0 12px;border:1px solid #ded5ef;border-radius:999px;color:#6d54a4;background:#faf7ff;font:inherit;font-size:11px;font-weight:750;cursor:pointer; }
+  .page3-manage-button.delete { border-color:#f0ccd8;color:#a34d68;background:#fff5f8; }
+  .page3-edit-form { margin-top:13px;padding:14px;border:1px solid #e6dcf3;border-radius:15px;background:#fcfaff; }
+  .page3-edit-form h4 { margin:0 0 11px;color:#55436f;font-size:15px; }
+  .page3-my-panel { scroll-margin-top:18px;margin:22px 0;padding:22px;border:1px solid #e4dcf4;border-radius:21px;background:linear-gradient(135deg,#fbf8ff,#f3faff);box-shadow:0 8px 22px rgba(65,60,106,.06); }
+  .page3-my-heading { display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:15px; }
+  .page3-my-heading h2 { margin:0;color:#3b4560;font-size:22px; }
+  .page3-my-heading p { margin:4px 0 0;color:var(--p3-muted);font-size:12px; }
+  .page3-my-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px; }
+  .page3-my-card { padding:16px;border:1px solid #e6e2ef;border-radius:17px;background:#fff;box-shadow:0 5px 15px rgba(45,57,87,.05); }
+  .page3-my-card-top { display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px; }
+  .page3-my-card h3 { margin:0;color:#35415a;font-size:16px;line-height:1.4; }
+  .page3-my-activity { margin:3px 0 0;color:#7963b0;font-size:12px;font-weight:700; }
+  .page3-my-facts { display:grid;gap:5px;color:#68748a;font-size:12px;line-height:1.5; }
+  .page3-my-joined { display:inline-flex;margin-top:11px;padding:5px 9px;border-radius:999px;color:#34745e;background:#e7f7ef;font-size:11px;font-weight:750; }
+  .page3-my-state { padding:23px 16px;border:1px dashed #dcd2ed;border-radius:16px;color:#7c718c;background:rgba(255,255,255,.7);text-align:center; }
+  .page3-my-state h3 { margin:0 0 5px;color:#514561;font-size:17px; }
+  .page3-my-state p { margin:0 0 12px;font-size:13px; }
+  .page3-delete-modal { position:fixed;z-index:40;inset:0;display:grid;place-items:center;padding:20px;background:rgba(37,31,57,.46); }
+  .page3-delete-card { width:min(430px,100%);padding:24px;border:1px solid #efdce4;border-radius:21px;background:#fff;box-shadow:0 24px 60px rgba(34,27,49,.24); }
+  .page3-delete-card h2 { margin:0 0 7px;color:#493c53;font-size:21px; }
+  .page3-delete-card p { margin:0;color:#766a7d;font-size:13px;line-height:1.65; }
+  .page3-delete-actions { display:flex;justify-content:flex-end;gap:9px;margin-top:18px; }
+  .page3-delete-confirm { border-color:#df88a3!important;color:#fff!important;background:#d95f86!important; }
   .page3-form-panel,.page3-detail-panel,.page3-empty { margin:0 0 20px;padding:20px;border:1px solid #e8e6f1;border-radius:19px;background:#fff;box-shadow:0 7px 20px rgba(45,57,87,.05); }
   .page3-form-panel h2,.page3-detail-panel h2 { margin:0 0 15px;color:var(--p3-ink);font-size:20px; }
   .page3-form-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px; }
@@ -72,14 +112,31 @@
   .page3-empty { padding:30px 18px;color:var(--p3-muted);text-align:center; }
   .page3-empty h3 { margin:0 0 5px;color:#3c4860; }
   .page3-empty p { margin:0 0 12px;font-size:13px; }
+  .page3-empty-cta { display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 16px;border-radius:999px;color:#fff;background:linear-gradient(105deg,#eb77b5,#9274df);box-shadow:0 6px 14px rgba(145,107,202,.2);font-size:13px;font-weight:700;text-decoration:none; }
+  .page3-selection-trail { display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:20px 0 4px;padding:10px 12px;border:1px solid #e8def7;border-radius:15px;background:#faf7ff;color:#74658d;font-size:12px; }
+  .page3-selection-chip { display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border:1px solid #eadff7;border-radius:999px;background:#fff; }
+  .page3-selection-chip strong { color:#55436f;font-size:12px; }
+  .page3-selection-arrow { color:#a491bd;font-weight:700; }
+  .page3-selection-current { color:#7453b0;background:#f1eaff; }
   .page3 a:focus-visible,.page3 button:focus-visible,.page3 input:focus-visible,.page3 select:focus-visible { outline:3px solid #edb6d6;outline-offset:3px; }
   @media(max-width:700px) { .page3-hero { align-items:flex-start;flex-direction:column; }.page3-hero-actions { width:100%; }.page3-toolbar { align-items:flex-start;flex-direction:column; } }
-  @media(max-width:600px) { .page3-grid { grid-template-columns:minmax(0,1fr); }.page3-hero { padding:25px 20px;border-radius:22px; }.page3-form-grid { grid-template-columns:1fr; }.page3-field.wide { grid-column:auto; } }
+  @media(max-width:600px) { .page3-grid,.page3-my-grid { grid-template-columns:minmax(0,1fr); }.page3-hero { padding:25px 20px;border-radius:22px; }.page3-form-grid { grid-template-columns:1fr; }.page3-field.wide { grid-column:auto; }.page3-my-heading { align-items:flex-start;flex-direction:column; } }
   @media(max-width:390px) { .page3-card { padding:15px; }.page3-card-actions { align-items:stretch;flex-direction:column; }.page3-join { width:100%; } }
 </style>
 {% endblock %}
 {% block content %}
 <div class="page3">
+  <div class="page3-user-row">
+    <div class="page3-user-badge" data-demo-auth-profile hidden>
+      <span aria-hidden="true">👤</span>
+      <span class="page3-user-copy">
+        <strong class="page3-user-name" data-demo-auth-display-name></strong>
+        <small class="page3-user-username">@<span data-demo-auth-username></span></small>
+      </span>
+      <button class="page3-user-logout" type="button" data-demo-auth-logout>ออกจากระบบ</button>
+    </div>
+  </div>
+
   <section class="page3-hero" aria-labelledby="activity-groups-title">
     <div class="page3-hero-copy">
       <span class="page3-eyebrow">ACTIVITY BUDDY · กลุ่มกิจกรรม</span>
@@ -88,9 +145,63 @@
     </div>
     <div class="page3-hero-actions">
       <a class="page3-primary" href="{{ url_for('page', name='page3', activity=selected_activity, place=selected_place, action='create') }}">+ สร้างกลุ่มกิจกรรมใหม่</a>
-      <a class="page3-secondary" href="#activity-groups">ดูกลุ่มกิจกรรม</a>
+      <a class="page3-secondary" href="#my-activity-groups" data-demo-my-groups-link>ดูกลุ่มกิจกรรม</a>
     </div>
   </section>
+
+  <section class="page3-my-panel" id="my-activity-groups" aria-labelledby="my-groups-title">
+    <div class="page3-my-heading">
+      <div>
+        <h2 id="my-groups-title">กลุ่มกิจกรรมของฉัน</h2>
+        <p>รวมกลุ่มที่คุณเข้าร่วมจากทุกกิจกรรมและทุกสถานที่</p>
+      </div>
+    </div>
+    <div class="page3-my-state" data-demo-my-groups-login hidden>
+      <h3>กรุณาเข้าสู่ระบบ</h3>
+      <p>กรุณาเข้าสู่ระบบเพื่อดูกลุ่มกิจกรรมของคุณ</p>
+      <a class="page3-empty-cta" href="{{ url_for('home') }}">ไปหน้าเข้าสู่ระบบ</a>
+    </div>
+    <div class="page3-my-state" data-demo-my-groups-empty hidden>
+      <h3>คุณยังไม่มีกลุ่มกิจกรรม</h3>
+      <p>ลองเลือกกิจกรรมที่สนใจและเข้าร่วมกลุ่มได้เลย</p>
+      <a class="page3-empty-cta" href="{{ url_for('page', name='page1') }}">ค้นหากิจกรรม</a>
+    </div>
+    <div class="page3-my-grid" data-demo-my-groups-grid hidden>
+      {% for activity in all_activities %}
+      <article class="page3-my-card" data-demo-my-group-card data-group-key="{{ activity.group_key }}" hidden>
+        <div class="page3-my-card-top">
+          <div>
+            <h3>{{ activity.group_name }}</h3>
+            <p class="page3-my-activity">{{ activity.icon }} {{ activity.activity }}</p>
+          </div>
+          <span class="page3-status {{ activity.status_class }}">{{ activity.status_text }}</span>
+        </div>
+        <div class="page3-my-facts">
+          <span>📍 {{ activity.place }}</span>
+          <span>👤 สร้างโดย {{ activity.creator }}</span>
+          <span>📅 {{ activity.date_text }}</span>
+          <span>🕒 {{ activity.start_time }}–{{ activity.end_time }}</span>
+          <span>👥 {{ activity.members }} / {{ activity.max_members }} คน</span>
+        </div>
+        <span class="page3-my-joined">✓ เข้าร่วมแล้ว</span>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  {% if selected_activity or selected_place %}
+  <nav class="page3-selection-trail" aria-label="ตัวเลือกปัจจุบัน">
+    {% if selected_activity %}
+    <span class="page3-selection-chip">กิจกรรม: <strong>{{ selected_activity }}</strong></span>
+    {% endif %}
+    {% if selected_place %}
+    <span class="page3-selection-arrow" aria-hidden="true">→</span>
+    <span class="page3-selection-chip">สถานที่: <strong>{{ selected_place }}</strong></span>
+    {% endif %}
+    <span class="page3-selection-arrow" aria-hidden="true">→</span>
+    <span class="page3-selection-chip page3-selection-current">กลุ่มกิจกรรม</span>
+  </nav>
+  {% endif %}
 
   <nav class="page3-filterbar" aria-label="Filter activity groups">
     <a class="page3-filter{% if not selected_activity %} active{% endif %}" href="{{ url_for('page', name='page3') }}">ทุกกลุ่ม ({{ total_group_count }})</a>
@@ -102,8 +213,10 @@
   {% if show_create_form %}
   <section class="page3-form-panel" aria-labelledby="create-group-title">
     <h2 id="create-group-title">สร้างกลุ่มกิจกรรมใหม่</h2>
-    <form method="post" action="{{ url_for('page', name='page3', activity=selected_activity, place=selected_place, action='create') }}">
+    <form method="post" action="{{ url_for('page', name='page3', activity=selected_activity, place=selected_place, action='create') }}" data-demo-create-form>
       <input type="hidden" name="action" value="create">
+      <input type="hidden" name="creator_username" value="">
+      <input type="hidden" name="group_id" value="">
       <div class="page3-form-grid">
         <div class="page3-field">
           <label for="group_name">ชื่อกลุ่ม</label>
@@ -157,7 +270,7 @@
   {% if selected_group %}
   <section class="page3-detail-panel" aria-labelledby="selected-group-title">
     <h2 id="selected-group-title">{{ selected_group.group_name }}</h2>
-    <div>👤 {{ selected_group.creator }} · 📍 {{ selected_group.place }} · 🕒 {{ selected_group.start_time }} - {{ selected_group.end_time }} · {{ selected_group.date }}</div>
+    <div>👤 {{ selected_group.creator }} · 📍 {{ selected_group.place }} · 📅 {{ selected_group.date_text }} · 🕒 {{ selected_group.start_time }}–{{ selected_group.end_time }}</div>
     <a class="page3-view" href="{{ url_for('page', name='page3', activity=selected_activity, place=selected_place) if selected_activity else url_for('page', name='page3') }}">กลับไปดูกลุ่มกิจกรรม</a>
   </section>
   {% endif %}
@@ -171,21 +284,23 @@
       <p>{{ group_count }} กลุ่ม</p>
     </div>
 
+    <div class="page3-join-notice" data-demo-join-notice role="status" aria-live="polite" hidden></div>
+
     {% if activities %}
     <div class="page3-grid">
       {% for activity in activities %}
-      <article class="page3-card">
+      <article class="page3-card" data-demo-group data-group-key="{{ activity.group_key }}" data-owner-username="{{ activity.creator_username }}" data-date="{{ activity.date }}" data-start-time="{{ activity.start_time }}" data-end-time="{{ activity.end_time }}" data-group-name="{{ activity.group_name }}" data-activity-name="{{ activity.activity }}" data-is-full="{{ 'true' if activity.is_full else 'false' }}">
         <div class="page3-card-top">
           <div class="page3-avatar" aria-hidden="true">{{ activity.icon }}</div>
           <div class="page3-group-info">
             <a class="page3-group-name" href="{{ url_for('page', name='page3', activity=activity.activity, place=activity.place, group_id=activity.id) }}">{{ activity.group_name }}</a>
             <div class="page3-host-note">สร้างโดย: {{ activity.creator }}</div>
           </div>
-          <span class="page3-status{% if activity.is_full %} full{% endif %}">{% if activity.is_full %}เต็ม{% else %}เปิดรับ{% endif %}</span>
+          <span class="page3-status {{ activity.status_class }}">{{ activity.status_text }}</span>
         </div>
         <h3 class="page3-activity">{{ activity.activity }}</h3>
         <div class="page3-facts">
-          <div class="page3-fact"><span class="page3-fact-label">📅 วันที่</span><span class="page3-fact-value">{{ activity.date }}</span></div>
+          <div class="page3-fact"><span class="page3-fact-label">📅 วันที่</span><span class="page3-fact-value">{{ activity.date_text }}</span></div>
           <div class="page3-fact"><span class="page3-fact-label">🕒 เวลา</span><span class="page3-fact-value">{{ activity.start_time }} - {{ activity.end_time }}</span></div>
           <div class="page3-fact"><span class="page3-fact-label">📍 สถานที่</span><span class="page3-fact-value">{{ activity.place }}</span></div>
           <div class="page3-fact"><span class="page3-fact-label">👤 ผู้สร้างกลุ่ม</span><span class="page3-fact-value">{{ activity.creator }}</span></div>
@@ -196,38 +311,98 @@
         </div>
         <div class="page3-card-actions">
           <a class="page3-view" href="{{ url_for('page', name='page3', activity=activity.activity, place=activity.place, group_id=activity.id) }}">ดูรายละเอียด &#x2192;</a>
-          <form method="post" action="{{ url_for('page', name='page3', activity=activity.activity, place=activity.place) }}">
+          <form method="post" action="{{ url_for('page', name='page3', activity=activity.activity, place=activity.place) }}" data-demo-join-form>
             <input type="hidden" name="action" value="join">
             <input type="hidden" name="group_index" value="{{ activity.id }}">
-            <button class="page3-join" type="submit"{% if activity.is_full %} disabled{% endif %}>{% if activity.is_full %}กลุ่มเต็ม{% else %}เข้าร่วมกลุ่ม{% endif %}</button>
+            <input type="hidden" name="group_key" value="{{ activity.group_key }}">
+            <input type="hidden" name="username" value="">
+            <input type="hidden" name="joined_group_keys" value="[]">
+            <button class="page3-join{% if activity.is_full %} is-full{% endif %}" data-demo-join-button type="submit"{% if activity.is_full %} disabled{% endif %}>{% if activity.is_full %}เต็มแล้ว{% else %}เข้าร่วมกลุ่ม{% endif %}</button>
           </form>
         </div>
+        <div class="page3-owner-actions" data-demo-owner-actions hidden>
+          <button class="page3-manage-button" type="button" data-demo-edit-open>แก้ไข</button>
+          <button class="page3-manage-button delete" type="button" data-demo-delete-open data-group-index="{{ activity.id }}" data-group-key="{{ activity.group_key }}">ลบกลุ่ม</button>
+        </div>
+        <form class="page3-edit-form" method="post" action="{{ url_for('page', name='page3', activity=activity.activity, place=activity.place) }}" data-demo-edit-form hidden>
+          <h4>แก้ไขกลุ่มกิจกรรม</h4>
+          <input type="hidden" name="action" value="edit">
+          <input type="hidden" name="group_index" value="{{ activity.id }}">
+          <input type="hidden" name="group_key" value="{{ activity.group_key }}">
+          <input type="hidden" name="username" value="">
+          <input type="hidden" name="joined_group_keys" value="[]">
+          <div class="page3-form-grid">
+            <div class="page3-field wide">
+              <label for="edit-group-name-{{ activity.id }}">ชื่อกลุ่ม</label>
+              <input id="edit-group-name-{{ activity.id }}" name="group_name" value="{{ activity.group_name }}" required maxlength="80">
+            </div>
+            <div class="page3-field">
+              <label for="edit-activity-{{ activity.id }}">กิจกรรม</label>
+              <select id="edit-activity-{{ activity.id }}" name="activity" required>
+                {% for category in activity_categories %}
+                <option value="{{ category.name }}"{% if category.name == activity.activity %} selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="page3-field">
+              <label for="edit-place-{{ activity.id }}">สถานที่นัดพบ</label>
+              <input id="edit-place-{{ activity.id }}" name="place" value="{{ activity.place }}" required maxlength="160">
+            </div>
+            <div class="page3-field">
+              <label for="edit-date-{{ activity.id }}">วันที่</label>
+              <input id="edit-date-{{ activity.id }}" name="date" type="date" value="{{ activity.date }}" required>
+            </div>
+            <div class="page3-field">
+              <label for="edit-start-{{ activity.id }}">เวลาเริ่ม</label>
+              <input id="edit-start-{{ activity.id }}" name="start_time" type="time" value="{{ activity.start_time }}" required>
+            </div>
+            <div class="page3-field">
+              <label for="edit-end-{{ activity.id }}">เวลาสิ้นสุด</label>
+              <input id="edit-end-{{ activity.id }}" name="end_time" type="time" value="{{ activity.end_time }}" required>
+            </div>
+            <div class="page3-field">
+              <label for="edit-max-{{ activity.id }}">จำนวนสมาชิกสูงสุด</label>
+              <input id="edit-max-{{ activity.id }}" name="max_members" type="number" min="2" max="50" value="{{ activity.max_members }}" required>
+            </div>
+          </div>
+          <div class="page3-form-actions">
+            <button class="page3-primary page3-submit" type="submit">บันทึกการแก้ไข</button>
+            <button class="page3-manage-button" type="button" data-demo-edit-cancel>ยกเลิก</button>
+          </div>
+        </form>
       </article>
       {% endfor %}
     </div>
     {% else %}
     <div class="page3-empty">
-      <h3>ไม่พบกลุ่มกิจกรรม</h3>
-      <p>{% if selected_activity %}ยังไม่มีกลุ่มที่ตรงกับกิจกรรมและสถานที่นี้{% else %}ยังไม่มีกลุ่มกิจกรรมในขณะนี้{% endif %}</p>
-      <a class="page3-view" href="{{ url_for('page', name='page3') }}">ดูกลุ่มทั้งหมด</a>
+      <h3>{% if selected_activity %}ยังไม่มีกลุ่มสำหรับกิจกรรมนี้{% else %}ยังไม่มีกลุ่มกิจกรรม{% endif %}</h3>
+      <p>{% if selected_activity %}คุณสามารถเป็นคนแรกที่สร้างกลุ่มได้เลย{% else %}เริ่มต้นสร้างกลุ่มกิจกรรมกลุ่มแรกได้เลย{% endif %}</p>
+      <a class="page3-empty-cta" href="{{ url_for('page', name='page3', activity=selected_activity, place=selected_place, action='create') }}">+ สร้างกลุ่มแรก</a>
     </div>
     {% endif %}
   </section>
+
+  <div class="page3-delete-modal" data-demo-delete-modal hidden>
+    <div class="page3-delete-card" role="dialog" aria-modal="true" aria-labelledby="delete-group-title">
+      <h2 id="delete-group-title">ต้องการลบกลุ่มนี้หรือไม่?</h2>
+      <p>เมื่อลบแล้ว กลุ่มจะหายออกจากรายการกิจกรรมของสมาชิก</p>
+      <form method="post" action="{{ url_for('page', name='page3', activity=selected_activity, place=selected_place) }}" data-demo-delete-form>
+        <input type="hidden" name="action" value="delete">
+        <input type="hidden" name="group_index" value="">
+        <input type="hidden" name="username" value="">
+        <input type="hidden" name="deleted_group_key" value="">
+        <div class="page3-delete-actions">
+          <button class="page3-manage-button" type="button" data-demo-delete-cancel>ยกเลิก</button>
+          <button class="page3-manage-button page3-delete-confirm" type="submit">ยืนยันการลบ</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
-<script>
-  (function () {
-    const creatorInput = document.getElementById("creator");
-    if (!creatorInput || creatorInput.value.trim() !== "") {
-      return;
-    }
-
-    // Use the nickname from the Home-page login as the default creator.
-    const displayName = sessionStorage.getItem("display_name") || "";
-    creatorInput.value = displayName;
-  }());
-</script>
+<script id="activity-group-data" type="application/json">{{ all_activities|tojson }}</script>
+<script src="{{ url_for('static', filename='js/demo-auth.js') }}"></script>
 {% endblock %}
 
