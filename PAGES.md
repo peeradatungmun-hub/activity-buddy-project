@@ -11,21 +11,21 @@
 - [✓] เปิด /team เห็นชื่อทุกคน
 - [✓] commit `team: members filled` + push
 
-## page1 — ผู้รับผิดชอบ: ปัณณวัฒน์ จันเพ็ญ · แบบจาก catalog: __________
+## page1 — ผู้รับผิดชอบ: ปัณณวัฒน์ จันเพ็ญ · แบบจาก catalog: search
 - [✓] คัดลอกจาก catalog แล้วเปลี่ยน TITLE
 - [✓] ใช้ field ของ data.json ของกลุ่ม
 - [✓] เปิด /page1 ได้ ไม่มี TODO
 - [✓] `check.bat` → /page1 ✓ ไม่มี warning
 - [✓] commit `page1: ...`
 
-## page2 — ผู้รับผิดชอบ: นางสาวพีรดา ตั้งมั่น · แบบจาก catalog: __________
+## page2 — ผู้รับผิดชอบ: นางสาวพีรดา ตั้งมั่น · แบบจาก catalog: stats
 - [✓] คัดลอกจาก catalog แล้วเปลี่ยน TITLE
 - [✓] ใช้ field ของ data.json ของกลุ่ม
 - [✓] เปิด /page2 ได้ ไม่มี TODO
 - [✓] `check.bat` → /page2 ✓ ไม่มี warning
 - [✓] commit `page2: ...`
 
-## page3 — ผู้รับผิดชอบ: นางสาวสกาว แก้วเขียว · แบบจาก catalog: __________
+## page3 — ผู้รับผิดชอบ: นางสาวสกาว แก้วเขียว · แบบจาก catalog: form
 - [✓] คัดลอกจาก catalog แล้วเปลี่ยน TITLE
 - [✓] ใช้ field ของ data.json ของกลุ่ม
 - [✓] เปิด /page3 ได้ ไม่มี TODO

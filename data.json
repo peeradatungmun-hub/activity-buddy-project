@@ -7,7 +7,7 @@
     "date": "2026-10-05",
     "start_time": "17:00",
     "end_time": "18:30",
-    "members": 4,
+    "members": 6,
     "max_members": 10,
     "status": "เปิดรับ"
   },
@@ -106,5 +106,29 @@
     "members": 2,
     "max_members": 5,
     "status": "เปิดรับ"
+  },
+  {
+    "activity": "ว่ายน้ำ",
+    "place": "ข้างสระว่ายน้ำหนองอีเจม",
+    "group_name": "ลานหนองอีเจม",
+    "date": "2026-10-01",
+    "members": 2,
+    "max_members": 3,
+    "status": "เปิดรับ",
+    "creator": "ทนุย",
+    "start_time": "16:00",
+    "end_time": "21:00"
+  },
+  {
+    "activity": "แบดมินตัน",
+    "place": "ข้างสระว่ายน้ำหนองอีเจม",
+    "group_name": "ลานหนองอีเจม",
+    "date": "2569-01-10",
+    "members": 3,
+    "max_members": 6,
+    "status": "เปิดรับ",
+    "creator": "ทนุย",
+    "start_time": "15:30",
+    "end_time": "15:31"
   }
 ]
